@@ -1,35 +1,64 @@
 Sets
-    m   / m1*m3 /
-    a   / a1*a5 /;
+    m   / m1*m2 /
+    a   / a1*a5 /
+    wd  / wd1*wd5/;
 
 Parameter
-    priority(a);
+    priority(a)
+    expectedHours(a)
+    maxWorkingHours(m)
+    maxWorkingHoursWeek(m);
     
-    
-
+*1 = high, 2 = normal, 3 = less
 priority("a1") = 2;
 priority("a2") = 2;
 priority("a3") = 1;
 priority("a4") = 1;
-priority("a5") = 3;    
+priority("a5") = 3;
+
+expectedHours("a1") = 2;
+expectedHours("a2") = 9;
+expectedHours("a3") = 4;
+expectedHours("a4") = 5;
+expectedHours("a5") = 4;
+
+maxWorkingHours(m) = 10;
+maxWorkingHoursWeek(m) = 40;
 
 Variables
     obj;
 
 Binary Variables
-    x(m,a);
+    x(m,a,wd);
     
 Equations 
     mip;
 
 *Zielfunktion    
-mip .. obj =e= sum((m,a), (1/priority(a))*x(m,a));
+mip .. obj =e= sum((m,a,wd), (1/priority(a))*x(m,a,wd));
+
+
+
+
+
 
 Equations
-    nb1;
+    nb1
+    nb2
+    nb3;
 
 *Nebenbedingungen
-nb1(a) .. sum(m, x(m,a)) =l= 1;
+
+*Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
+*kann aber auch unzugewiesen bleiben.
+nb1(a) .. sum((m,wd), x(m,a,wd)) =l= 1;
+
+*Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
+nb2(m, wd) .. sum((a), expectedHours(a) * x(m,a,wd)) =l= maxWorkingHours(m);
+
+*Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
+nb3(m) .. sum((a,wd), expectedHours(a) * x(m,a,wd)) =l= maxWorkingHoursWeek(m);
+
 
 *Solve
 option mip = CPLEX;
