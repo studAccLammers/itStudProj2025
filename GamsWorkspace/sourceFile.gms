@@ -7,8 +7,15 @@ Parameter
     priority(a)
     expectedHours(a)
     maxWorkingHours(m)
-    maxWorkingHoursWeek(m);
-    
+    maxWorkingHoursWeek(m)
+    dayWeight(wd);
+
+dayWeight("wd1") = 1;
+dayWeight("wd2") = 2;
+dayWeight("wd3") = 3;
+dayWeight("wd4") = 4;
+dayWeight("wd5") = 5;
+
 *1 = high, 2 = normal, 3 = less
 priority("a1") = 2;
 priority("a2") = 2;
@@ -18,7 +25,7 @@ priority("a5") = 3;
 
 expectedHours("a1") = 2;
 expectedHours("a2") = 9;
-expectedHours("a3") = 4;
+expectedHours("a3") = 3;
 expectedHours("a4") = 5;
 expectedHours("a5") = 4;
 
@@ -35,7 +42,7 @@ Equations
     mip;
 
 *Zielfunktion    
-mip .. obj =e= sum((m,a,wd), (1/priority(a))*x(m,a,wd));
+mip .. obj =e= sum((m,a,wd), (1/(priority(a)+dayWeight(wd)))*x(m,a,wd));
 
 
 
