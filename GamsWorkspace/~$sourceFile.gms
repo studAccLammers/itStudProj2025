@@ -25,13 +25,10 @@ Equations
 mip .. obj =e= sum((m,a), (1/priority(a))*x(m,a));
 
 Equations
-    nb1
-    nb2;
+    nb1;
 
 *Nebenbedingungen
 nb1(a) .. sum(m, x(m,a)) =l= 1;
-
-nb2(m) .. sum(a, x(m,a)) =l= 1;
 
 *Solve
 option mip = CPLEX;
