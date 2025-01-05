@@ -48,6 +48,7 @@ necessarySkill("a1","s2") = 1;
 necessarySkill("a1","s3") = 1;
 necessarySkill("a2","s1") = 1;
 necessarySkill("a3","s4") = 1;
+
 Variables
     obj;
 
