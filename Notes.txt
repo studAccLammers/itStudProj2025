@@ -1,0 +1,11 @@
+GAMS Code ist besser, da der JAVA Code einen Auftrag den ersten Mitarbeiter in der itereation zuordnet.
+
+
+Beispiel:
+Auftrag 6 kann von M2 und M3 bearbeitet werden 
+Auftrag 13 darf Skillmäßig nur von m2 bearbeitet werden
+
+
+durch die Iterationen wird Auftrag 6 M2 zugeordnet, Wodurch beim iterieren durch Auftrag 13 keine Kapazitäten mehr von m2 frei sind. Dadurch wird der Auftrag erst an einem späteren Tag abgearbeitet
+
+Der GAMS Code würde Auftrag 6 M3 zuweisen und Auftrag 13 M2 am selben Tag. -> höhere Optimierung
