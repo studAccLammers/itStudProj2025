@@ -1,3 +1,5 @@
+package services;
+
 import dtos.Contract;
 import dtos.ContractConfirmation;
 import dtos.Employee;
@@ -8,16 +10,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ContractService {
+public class BaseContractService implements ContractService {
 
     public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) {
         List<Contract> orderedContracts = orderContractsByPriority(contracts);
-        LocalDate weekEnd = weekStart.plusDays(5);
+        LocalDate weekEnd = weekStart.plusDays(4);
         List<Contract> unassignedContracts = assignContractToCapableEmployee(employees, weekStart, weekEnd, orderedContracts);
         unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(1), weekEnd, unassignedContracts);
         unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(2), weekEnd, unassignedContracts);
         unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(3), weekEnd, unassignedContracts);
-        unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(4), weekEnd, unassignedContracts);
         assignContractToCapableEmployee(employees, weekEnd, weekEnd, unassignedContracts);
 
         List<ContractConfirmation> contractConfirmations = new ArrayList<>();
@@ -37,6 +38,7 @@ public class ContractService {
                 if (employee.capableForContract(day, day, weekEnd, contract)) {
                     employee.assignContract(day, contract);
                     unassignedContracts.remove(contract);
+                    break;
                 }
             }
         }

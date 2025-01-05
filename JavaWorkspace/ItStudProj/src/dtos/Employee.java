@@ -1,6 +1,7 @@
 package dtos;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Employee {
     private final int maxWorkingHours;
     private final int maxWorkingHoursPerWeek;
     private final List<Skill> skills;
-    private List<ContractConfirmation> contracts;
+    private final List<ContractConfirmation> contracts = new ArrayList<>();
 
 
     public Employee(int id, String name, int maxWorkingHours, int maxWorkingHoursPerWeek, List<Skill> skills) {
