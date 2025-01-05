@@ -48,7 +48,6 @@ necessarySkill("a1","s2") = 1;
 necessarySkill("a1","s3") = 1;
 necessarySkill("a2","s1") = 1;
 necessarySkill("a3","s4") = 1;
-
 Variables
     obj;
 
@@ -72,18 +71,23 @@ Equations
     nb3
     nb4;
 
-*Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
+*nb1: Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
 *kann aber auch unzugewiesen bleiben.
 nb1(a) .. sum((m,wd), x(m,a,wd)) =l= 1;
 
-*Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
+*nb2: Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
 nb2(m, wd) .. sum(a, expectedHours(a) * x(m,a,wd)) =l= maxWorkingHours(m);
 
-*Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
+*nb3: Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
 nb3(m) .. sum((a,wd), expectedHours(a) * x(m,a,wd)) =l= maxWorkingHoursWeek(m);
 
-*Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
-nb4(m,a,wd) .. prod(s, 1 - necessarySkill(a,s) + employeeSkill(m,s)) =g= x(m,a,wd);
+*nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
+Parameter
+    noSkillNecessary(a);
+
+noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
+
+nb4(m,a,wd) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd);
 
 
 
