@@ -7,5 +7,8 @@ Auftrag 13 darf Skillmäßig nur von m2 bearbeitet werden
 
 
 durch die Iterationen wird Auftrag 6 M2 zugeordnet, Wodurch beim iterieren durch Auftrag 13 keine Kapazitäten mehr von m2 frei sind. Dadurch wird der Auftrag erst an einem späteren Tag abgearbeitet
-
 Der GAMS Code würde Auftrag 6 M3 zuweisen und Auftrag 13 M2 am selben Tag. -> höhere Optimierung
+
+-> Aktuelle Lösung: Bei der Zuweisung Mitarbeiter mit weniger skills als erstes zuweisen, um bei simpleren Aufträgen diese Mitarbeiter zu Bevorzugen
+
+Die Lösung verbessert das Problem jedoch nicht komplett. Es wird nur nach Menge der Skills sortiert. Der GAMS Code findet die optimalere Zuordnung da dieser genau sucht welcher Mitarbeiter am besten geeignet ist.
