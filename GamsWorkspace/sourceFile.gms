@@ -1,5 +1,5 @@
 Sets
-    m   / m1*m3 /
+    m   / m1*m2 /
     a   / a1*a15 /
     wd  / wd1*wd5/
     s   / s1*s5/;
@@ -9,6 +9,7 @@ Parameter
     expectedHours(a)
     maxWorkingHours(m)
     maxWorkingHoursWeek(m)
+    minWorkingHours(m)
     dayWeight(wd) 
     employeeSkill(m,s)
     necessarySkill(a,s); 
@@ -70,6 +71,7 @@ necessarySkill("a15","s5") = 1;
 
 maxWorkingHours(m) = 10;
 maxWorkingHoursWeek(m) = 40;
+minWorkingHours(m) = 6;
 
 *1 wenn benutzer den Skill besitzt sonst 0
 employeeSkill("m1","s1") = 1;
@@ -99,7 +101,8 @@ Equations
     nb1
     nb2
     nb3
-    nb4;
+    nb4
+    nb5;
 
 *nb1: Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
 *kann aber auch unzugewiesen bleiben.
@@ -118,6 +121,9 @@ Parameter
 noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
 
 nb4(m,a,wd) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd);
+
+*nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
+nb5(m, wd) .. sum(a, expectedHours(a) * x(m,a,wd)) =g= minWorkingHours(m);
 
 
 
