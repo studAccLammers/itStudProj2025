@@ -13,16 +13,18 @@ import java.util.stream.Collectors;
 public class BaseContractService implements ContractService {
 
     public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) {
-        List<Contract> orderedContracts = orderContractsByPriority(contracts);
+        List<Contract> orderedContracts = orderContractsByPriority(contracts); //prefer in iteration contracts with highes priority and so on.
+        List<Employee> orderedEmployees = orderEmployeeBySkills(employees); //prefer in iteration employees with fewer skills to have more capacity at high skilled employees for hard cases.
+
         LocalDate weekEnd = weekStart.plusDays(4);
-        List<Contract> unassignedContracts = assignContractToCapableEmployee(employees, weekStart, weekEnd, orderedContracts);
-        unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(1), weekEnd, unassignedContracts);
-        unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(2), weekEnd, unassignedContracts);
-        unassignedContracts = assignContractToCapableEmployee(employees, weekStart.plusDays(3), weekEnd, unassignedContracts);
-        assignContractToCapableEmployee(employees, weekEnd, weekEnd, unassignedContracts);
+        List<Contract> unassignedContracts = assignContractToCapableEmployee(orderedEmployees, weekStart, weekEnd, orderedContracts);
+        unassignedContracts = assignContractToCapableEmployee(orderedEmployees, weekStart.plusDays(1), weekEnd, unassignedContracts);
+        unassignedContracts = assignContractToCapableEmployee(orderedEmployees, weekStart.plusDays(2), weekEnd, unassignedContracts);
+        unassignedContracts = assignContractToCapableEmployee(orderedEmployees, weekStart.plusDays(3), weekEnd, unassignedContracts);
+        assignContractToCapableEmployee(orderedEmployees, weekEnd, weekEnd, unassignedContracts);
 
         List<ContractConfirmation> contractConfirmations = new ArrayList<>();
-        employees.forEach(x -> contractConfirmations.addAll(x.getContracts()));
+        orderedEmployees.forEach(x -> contractConfirmations.addAll(x.getContracts()));
         return contractConfirmations;
     }
 
@@ -49,6 +51,12 @@ public class BaseContractService implements ContractService {
     private List<Contract> orderContractsByPriority(List<Contract> contracts) {
         return contracts.stream()
             .sorted(Comparator.comparing(Contract::getPriority))
+            .collect(Collectors.toList());
+    }
+
+    private List<Employee> orderEmployeeBySkills(List<Employee> employees) {
+        return employees.stream()
+            .sorted(Comparator.comparingInt(e -> e.getSkills().size()))
             .collect(Collectors.toList());
     }
 }

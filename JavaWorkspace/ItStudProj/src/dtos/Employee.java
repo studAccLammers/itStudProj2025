@@ -30,6 +30,10 @@ public class Employee {
         return name;
     }
 
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
     public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) {
         List<ContractConfirmation> assignedContractsForWeekTuples = contracts.stream().filter(x ->
                 x.getDate().getDayOfWeek().getValue() >= weekStart.getDayOfWeek().getValue() &&
