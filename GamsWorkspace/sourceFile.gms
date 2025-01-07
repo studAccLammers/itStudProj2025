@@ -122,9 +122,13 @@ Equations
     mip;
 
 *Zielfunktion
-mip .. obj =e= sum((m,a,aa,wd)$(not(ord(a) = ord(aa))),((1/priority(a)) * x(m,a,wd)) +
-                                                        ((1/dayWeight(wd)) * x(m,a,wd)) +
-                                                        ((1/(driveTime(a,aa) + 0.1)) * both_contracts_on_day(m,a,aa,wd)));
+mip .. obj =e= 
+    sum((m,a,aa,wd)$(not ord(a) = ord(aa)),
+              (1000 * ((1 / priority(a)) * x(m,a,wd)))
+            + (100 * ((1 / dayWeight(wd)) * x(m,a,wd)))
+            + ((1 / (driveTime(a,aa) + 0.1)) * both_contracts_on_day(m,a,aa,wd))
+    );
+
 
 
 
