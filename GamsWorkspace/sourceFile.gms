@@ -102,7 +102,7 @@ loop(a,
 
 maxWorkingHours(m) = 10;
 maxWorkingHoursWeek(m) = 40;
-minWorkingHours(m) = 1;
+minWorkingHours(m) = 0;
 
 *1 wenn benutzer den Skill besitzt sonst 0
 employeeSkill("m1","s1") = 1;
@@ -153,10 +153,10 @@ nb_both_contracts_on_day_3(m,a,aa,wd) .. both_contracts_on_day(m,a,aa,wd) =g= x(
 nb1(a) .. sum((m,wd), x(m,a,wd)) =l= 1;
 
 *nb2: Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
-nb2(m, wd) .. sum((a,aa)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =l= maxWorkingHours(m);
+nb2(m, wd) .. sum(a, expectedHours(a) * x(m,a,wd)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =l= maxWorkingHours(m);
 
 *nb3: Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
-nb3(m) .. sum((a,aa,wd)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =l= maxWorkingHoursWeek(m);
+nb3(m) .. sum((a,wd), expectedHours(a) * x(m,a,wd)) + sum((a,aa,wd)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =l= maxWorkingHoursWeek(m);
 
 *nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
 Parameter
@@ -167,7 +167,7 @@ noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
 nb4(m,a,wd) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd);
 
 *nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
-nb5(m, wd) .. sum((a,aa)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =g= minWorkingHours(m);
+nb5(m, wd) ..  sum(a, expectedHours(a) * x(m,a,wd)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =g= minWorkingHours(m);
 
 
 
@@ -177,3 +177,4 @@ Solve optModel using mip maximize obj;
 
 
 Display x.l;
+Display nb2.l;
