@@ -116,55 +116,36 @@ Variables
 
 Binary Variables
     x(m,a,wd)
-    z(m,a,aa,wd);
+    both_contracts_on_day(m,a,aa,wd);
     
 Equations 
     mip;
 
 *Zielfunktion
-mip .. obj =e= sum((m,a,aa,wd)$(not(ord(a) = ord(aa))),((1/priority(a)) * z(m,a,aa,wd)) +
-                                                        ((1/dayWeight(wd)) * z(m,a,aa,wd)) +
-                                                        ((1/(driveTime(a,aa) + 0.1)) * z(m,a,aa,wd)));
+mip .. obj =e= sum((m,a,aa,wd)$(not(ord(a) = ord(aa))),((1/priority(a)) * x(m,a,wd)) +
+                                                        ((1/dayWeight(wd)) * x(m,a,wd)) +
+                                                        ((1/(driveTime(a,aa) + 0.1)) * both_contracts_on_day(m,a,aa,wd)));
 
 
 
 
 *Nebenbedingungen
 Equations
-    nb_z
     nb1
     nb2
     nb3
     nb4
     nb5;
-
-
-
-Binary Variables
-    indicator_one_contract(m,wd)
-    y(m,wd);
     
 Equations
-    nb_y
-    nb_indicator
-    nb_maxContractsPerDay;
-    
-Parameter
-    maxContractsPerDay ;
-    
-maxContractsPerDay = 10;
+    nb_both_contracts_on_day_1
+    nb_both_contracts_on_day_2
+    nb_both_contracts_on_day_3;
 
-nb_maxContractsPerDay(m,wd) .. sum(a, x(m,a,wd)) =l= maxContractsPerDay;
 
-*y kann nur 1 annehmen, wenn summe von x == 1 und indicator == 1 oder Summe von x>1 und indicator == 0
-*Indicator ist also nur dann 1 wenn x <= 1 oder maxContractsPerDay überschritten aber dazu gibt es nb_maxContractsPerDay
-nb_indicator(m,wd) .. y(m, wd) =g= sum(a, x(m,a,wd)) - ((maxContractsPerDay + 1) * (1 - indicator_one_contract(m, wd)));
-
-*y darf nur > 0 sein, wenn der indicator an ist. Siehe oben, dass dieser ist nur an bei x <= 1, 1 ist
-nb_y(m,wd) .. y(m, wd) =l= 0 + (maxContractsPerDay * indicator_one_contract(m, wd));
-
-*nb_z_1: z kann nur 1 sein wenn der Mitarbeiter a und aa an einem Tag macht oder nur einen Auftrag an dem ganzen Tag insgesamt absolviert
-nb_z(m, a, aa, wd) .. z(m, a, aa, wd) =g= (x(m, a, wd) + x(m, aa, wd) + y(m,wd)) - 1;
+nb_both_contracts_on_day_1(m,a,aa,wd) .. both_contracts_on_day(m,a,aa,wd) =l= x(m, a, wd);
+nb_both_contracts_on_day_2(m,a,aa,wd) .. both_contracts_on_day(m,a,aa,wd) =l= x(m, aa, wd);
+nb_both_contracts_on_day_3(m,a,aa,wd) .. both_contracts_on_day(m,a,aa,wd) =g= x(m, a, wd) + x(m, aa, wd) - 1;
 
 
 *nb1: Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
@@ -172,10 +153,10 @@ nb_z(m, a, aa, wd) .. z(m, a, aa, wd) =g= (x(m, a, wd) + x(m, aa, wd) + y(m,wd))
 nb1(a) .. sum((m,wd), x(m,a,wd)) =l= 1;
 
 *nb2: Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
-nb2(m, wd) .. sum((a,aa), (expectedHours(a) + driveTime(a,aa)) * z(m,a,aa,wd)) =l= maxWorkingHours(m);
+nb2(m, wd) .. sum((a,aa)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =l= maxWorkingHours(m);
 
 *nb3: Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
-nb3(m) .. sum((a,aa,wd), (expectedHours(a) + driveTime(a,aa)) * z(m,a,aa,wd)) =l= maxWorkingHoursWeek(m);
+nb3(m) .. sum((a,aa,wd)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =l= maxWorkingHoursWeek(m);
 
 *nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
 Parameter
@@ -186,8 +167,7 @@ noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
 nb4(m,a,wd) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd);
 
 *nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
-nb5(m, wd) .. sum(a, expectedHours(a) * x(m,a,wd)) =g= minWorkingHours(m);
-
+nb5(m, wd) .. sum((a,aa)$(not(ord(a) = ord(aa))), ((expectedHours(a) * x(m,a,wd)) + (driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)))) =g= minWorkingHours(m);
 
 
 
@@ -197,4 +177,3 @@ Solve optModel using mip maximize obj;
 
 
 Display x.l;
-Display driveTime;
