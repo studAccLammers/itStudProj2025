@@ -153,16 +153,7 @@ Equations
 *nb_both_contracts_on_day_1(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =l= sum(ordInd, x(m, a, wd, ordInd));
 *nb_both_contracts_on_day_2(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =l= sum(ordInd, x(m, aa, wd, ordInd));
 *nb_both_contracts_on_day_3(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =g= sum(ordInd, x(m, a, wd, ordInd)) + sum(ordInd, x(m, aa, wd, ordInd)) - 1;
-
-nb_both_contracts_on_day_1(m,a,aa,wd)$(not ord(a) = ord(aa)) ..
-    both_contracts_on_day(m,a,aa,wd) =l= sum(ordInd$(ord(ordInd) < card(ordInd)), x(m, a, wd, ordInd))
-                                      + sum(ordInd$(ord(ordInd) < card(ordInd)), x(m, aa, wd, ordInd + 1)) - 1;
-
-nb_both_contracts_on_day_3(m,a,aa,wd)$(not ord(a) = ord(aa)) ..
-    both_contracts_on_day(m,a,aa,wd) =g= sum(ordInd$(ord(ordInd) < card(ordInd)), x(m, a, wd, ordInd))
-                                      + sum(ordInd$(ord(ordInd) < card(ordInd)), x(m, aa, wd, ordInd + 1)) - 2;
-
-*nb_no_index_jumps(m,wd,ordInd)$(ord(ordInd) > 1) .. sum(aa, x(m,aa,wd,ordInd)) =l= sum(a, x(m,a,wd,ordInd - 1));
+nb_no_index_jumps(m,wd,ordInd)$(ord(ordInd) > 1) .. sum(aa, x(m,aa,wd,ordInd)) =l= sum(a, x(m,a,wd,ordInd - 1));
 
 
 *nb1: Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
