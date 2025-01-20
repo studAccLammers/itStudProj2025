@@ -3,7 +3,7 @@ Sets
     a   / a1*a15 /
     wd  / wd1*wd5/
     s   / s1*s5/
-    ordInd /i1*i15/;
+    index /i1*i15/;
 
 Alias(a, aa);
 
@@ -16,10 +16,7 @@ Parameter
     dayWeight(wd) 
     employeeSkill(m,s)
     necessarySkill(a,s)
-    driveTime(a,aa)
-    ordVal(ordInd);
-    
-ordVal(ordInd) = ord(ordInd);
+    driveTime(a,aa);
 
 *Freitage werden in der Berechnung höher bestraft als Montage
 dayWeight("wd1") = 1;
@@ -119,17 +116,17 @@ Variables
     obj;
 
 Binary Variables
-    x(m,a,wd,ordInd)
-    both_contracts_on_day(m,a,aa,wd);
+    x(m,a,wd,index)
+    both_contracts_consecutively(m,a,aa,wd);
     
 Equations 
     mip;
 
 *Zielfunktion
 mip .. obj =e= 
-    sum((m,a,aa,wd,ordInd)$(not ord(a) = ord(aa)),
-              (100 * (1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,ordInd))
-            + ((1 / (driveTime(a,aa) + 0.1)) * both_contracts_on_day(m,a,aa,wd))
+    sum((m,a,aa,wd,index)$(not ord(a) = ord(aa)),
+              (100 * (1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index))
+            + ((1 / (driveTime(a,aa) + 0.1)) * both_contracts_consecutively(m,a,aa,wd))
     );
 
 
@@ -146,27 +143,27 @@ Equations
     nb6;
     
 Equations
-    nb_both_contracts_on_day_1
-    nb_both_contracts_on_day_2
-    nb_both_contracts_on_day_3
+    nb_both_contracts_consecutively_1
+    nb_both_contracts_consecutively_2
+    nb_both_contracts_consecutively_3
     nb_no_index_jumps;
     
 
-nb_both_contracts_on_day_1(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =l= sum(ordInd, x(m, a, wd, ordInd));
-nb_both_contracts_on_day_2(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =l= sum(ordInd, x(m, aa, wd, ordInd));
-nb_both_contracts_on_day_3(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_on_day(m,a,aa,wd) =g= sum(ordInd, x(m, a, wd, ordInd)) + sum(ordInd, x(m, aa, wd, ordInd)) - 1;
-nb_no_index_jumps(m,wd,ordInd)$(ord(ordInd) > 1) .. sum(aa, x(m,aa,wd,ordInd)) =l= sum(a, x(m,a,wd,ordInd - 1));
+nb_both_contracts_consecutively_1(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =l= sum(index, x(m, a, wd, index));
+nb_both_contracts_consecutively_2(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =l= sum(index, x(m, aa, wd, index));
+nb_both_contracts_consecutively_3(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =g= sum(index, x(m, a, wd, index)) + sum(index, x(m, aa, wd, index)) - 1;
+nb_no_index_jumps(m,wd,index)$(ord(index) > 1) .. sum(aa, x(m,aa,wd,index)) =l= sum(a, x(m,a,wd,index - 1));
 
 
 *nb1: Jeder Auftrag darf nur einem Mitarbeiter an einem Werktag zugeteilt werden,
 *kann aber auch unzugewiesen bleiben.
-nb1(a) .. sum((m,wd,ordInd), x(m,a,wd,ordInd)) =l= 1;
+nb1(a) .. sum((m,wd,index), x(m,a,wd,index)) =l= 1;
 
 *nb2: Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
-nb2(m, wd) .. sum((a,ordInd), expectedHours(a) * x(m,a,wd,ordInd)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =l= maxWorkingHours(m);
+nb2(m, wd) .. sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =l= maxWorkingHours(m);
 
 *nb3: Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
-nb3(m) .. sum((a,wd,ordInd), expectedHours(a) * x(m,a,wd,ordInd)) + sum((a,aa,wd)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =l= maxWorkingHoursWeek(m);
+nb3(m) .. sum((a,wd,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,wd)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =l= maxWorkingHoursWeek(m);
 
 *nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
 Parameter
@@ -174,13 +171,13 @@ Parameter
 
 noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
 
-nb4(m,a,wd,ordInd) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd,ordInd);
+nb4(m,a,wd,index) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd,index);
 
 *nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
-nb5(m, wd) ..  sum((a,ordInd), expectedHours(a) * x(m,a,wd,ordInd)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_on_day(m,a,aa,wd)) =g= minWorkingHours(m);
+nb5(m, wd) ..  sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =g= minWorkingHours(m);
 
 * nb6: Ein Mitarbeiter darf an einem Wochentag nur einmal einen bestimmten Index verwenden
-nb6(m, wd, ordInd) .. sum((a), x(m,a,wd,ordInd)) =l= 1;
+nb6(m, wd, index) .. sum((a), x(m,a,wd,index)) =l= 1;
 
 
 
@@ -198,6 +195,4 @@ Solve optModel using mip maximize obj;
 
 Display x.l;
 Display nb2.l;
-Display both_contracts_on_day.l;
-Display nb_both_contracts_on_day_3.l;
-Display driveTime;
+Display both_contracts_consecutively.l;
