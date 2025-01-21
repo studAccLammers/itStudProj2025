@@ -117,7 +117,7 @@ Variables
 
 Binary Variables
     x(m,a,wd,index)
-    both_contracts_consecutively(m,a,aa,wd);
+    both_contracts_consecutively(m,a,aa,wd, index);
     
 Equations 
     mip;
@@ -125,8 +125,8 @@ Equations
 *Zielfunktion
 mip .. obj =e= 
     sum((m,a,aa,wd,index)$(not ord(a) = ord(aa)),
-              (100 * (1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index))
-            + ((1 / (driveTime(a,aa) + 0.1)) * both_contracts_consecutively(m,a,aa,wd))
+              ((1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index))
+            + ((1 / (driveTime(a,aa) + 0.1)) * both_contracts_consecutively(m,a,aa,wd,index))
     );
 
 
@@ -146,12 +146,14 @@ Equations
     nb_both_contracts_consecutively_1
     nb_both_contracts_consecutively_2
     nb_both_contracts_consecutively_3
+    nb_both_contracts_consecutively_4
     nb_no_index_jumps;
     
 
-nb_both_contracts_consecutively_1(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =l= sum(index, x(m, a, wd, index));
-nb_both_contracts_consecutively_2(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =l= sum(index, x(m, aa, wd, index));
-nb_both_contracts_consecutively_3(m,a,aa,wd)$(not ord(a) = ord(aa)) .. both_contracts_consecutively(m,a,aa,wd) =g= sum(index, x(m, a, wd, index)) + sum(index, x(m, aa, wd, index)) - 1;
+nb_both_contracts_consecutively_1(m,a,aa,wd,index)$(ord(index) < card(index)) .. both_contracts_consecutively(m,a,aa,wd,index) =l= x(m,a,wd,index);
+nb_both_contracts_consecutively_2(m,a,aa,wd,index)$(ord(index) < card(index)) .. both_contracts_consecutively(m,a,aa,wd,index) =l= x(m,aa,wd,index+1);
+nb_both_contracts_consecutively_3(m,a,aa,wd,index)$(ord(index) < card(index)) .. both_contracts_consecutively(m,a,aa,wd,index) =g= x(m,a,wd,index) + x(m,aa,wd,index+1) - 1;
+nb_both_contracts_consecutively_4(m,a,aa,wd,index)$(ord(index) = card(index)) .. both_contracts_consecutively(m,a,aa,wd,index) =e= 0;
 nb_no_index_jumps(m,wd,index)$(ord(index) > 1) .. sum(aa, x(m,aa,wd,index)) =l= sum(a, x(m,a,wd,index - 1));
 
 
@@ -160,21 +162,19 @@ nb_no_index_jumps(m,wd,index)$(ord(index) > 1) .. sum(aa, x(m,aa,wd,index)) =l= 
 nb1(a) .. sum((m,wd,index), x(m,a,wd,index)) =l= 1;
 
 *nb2: Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden nicht überschreiten
-nb2(m, wd) .. sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =l= maxWorkingHours(m);
+nb2(m, wd) .. sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,index), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd,index)) =l= maxWorkingHours(m);
 
 *nb3: Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden nicht überschreiten
-nb3(m) .. sum((a,wd,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,wd)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =l= maxWorkingHoursWeek(m);
+nb3(m) .. sum((a,wd,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,wd,index), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd,index)) =l= maxWorkingHoursWeek(m);
 
 *nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
 Parameter
     noSkillNecessary(a);
-
 noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
-
 nb4(m,a,wd,index) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd,index);
 
 *nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
-nb5(m, wd) ..  sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa)$(not ord(a) = ord(aa)), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd)) =g= minWorkingHours(m);
+nb5(m, wd) ..  sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,index), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd,index)) =g= minWorkingHours(m);
 
 * nb6: Ein Mitarbeiter darf an einem Wochentag nur einmal einen bestimmten Index verwenden
 nb6(m, wd, index) .. sum((a), x(m,a,wd,index)) =l= 1;
@@ -194,5 +194,8 @@ Solve optModel using mip maximize obj;
 
 
 Display x.l;
-Display nb2.l;
 Display both_contracts_consecutively.l;
+Display nb2.l;
+Display nb3.l;
+Display nb5.l;
+Display driveTime;
