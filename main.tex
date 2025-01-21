@@ -1,0 +1,219 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}    % Umlaute im UTF-8 Zeichensatz
+\usepackage[T1]{fontenc}       % richtige Trennung von Umlauten
+\usepackage{amsmath,amssymb}   % Mathematikpakete
+\usepackage{amsfonts}
+\usepackage{geometry}          % Seitenränder anpassen
+\geometry{a1paper, left=25mm, right=25mm, top=20mm, bottom=20mm}
+\usepackage{lmodern}           % Schönere Schrift
+\usepackage{hyperref}          % Hyperlinks im PDF
+
+\title{Zusammenfassung des aktuellen MIP-Modells}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{1. Sets}
+\begin{itemize}
+  \item $m \in M$: Mitarbeiter (z.\,B.\ \texttt{m1,m2})
+  \item $a,\,aa \in A$: Aufträge (z.\,B.\ \texttt{a1--a15}), mit Alias $aa$
+  \item $wd \in WD$: Werktage (z.\,B.\ \texttt{wd1--wd5})
+  \item $i \in I$: Index-Slots pro Tag (z.\,B.\ \texttt{i1--i30})
+\end{itemize}
+
+\section*{2. Parameter}
+\begin{itemize}
+  \item $\text{priority}(a)$: Priorität von Auftrag $a$ (1 = \emph{höchste}, 2 = \emph{hoch}, 3 = \emph{normal}).
+  \item $\text{expectedHours}(a)$: Erwartete Ausführungsstunden für Auftrag $a$.
+  \item $\text{dayWeight}(wd)$: Gewicht des Wochentags (z.\,B.\ Montag=1, Dienstag=2, \dots).
+  \item $\text{maxWorkingHours}(m)$: Maximale Arbeitsstunden pro Tag für Mitarbeiter $m$.
+  \item $\text{maxWorkingHoursWeek}(m)$: Maximale Arbeitsstunden pro Woche für $m$.
+  \item $\text{minWorkingHours}(m)$: Minimale Arbeitsstunden pro Tag für $m$ (kann $0$ sein).
+  \item $\text{employeeSkill}(m,s) \in \{0,1\}$: Skill $s$ vorhanden bei Mitarbeiter $m$?
+  \item $\text{necessarySkill}(a,s) \in \{0,1\}$: Skill $s$ wird von Auftrag $a$ benötigt?
+  \item $\text{driveTime}(a,aa)$: Fahrzeit vom Auftrag $a$ zum Auftrag $aa$.
+  \item $\text{driveTimeMainStation}(a)$: Fahrzeit vom Depot (bzw.\ Hauptstandort) zum Auftrag $a$ \emph{oder} vom Auftrag $a$ zurück zum Depot.
+  \item $\text{noSkillNecessary}(a)$: Hilfsparameter (1, wenn Auftrag $a$ keine Skills braucht).
+\end{itemize}
+
+\section*{3. Variablen}
+\begin{itemize}
+  \item $x_{m,a,wd,i} \in \{0,1\}$ 
+  \\[3pt]
+    $=1$, falls Mitarbeiter $m$ den Auftrag $a$ am Werktag $wd$ im Slot $i$ ausführt.
+  \item $\text{both\_contracts\_consecutively}_{m,a,aa,wd,i} \in \{0,1\}$
+  \\[3pt]
+    $=1$, falls Mitarbeiter $m$ an Tag $wd$ Auftrag $a$ im Slot $i$ \emph{und} Auftrag $aa$ im Slot $(i+1)$ ausführt.
+  \item $\text{is\_last\_contract\_on\_wd}_{m,a,wd,i} \in \{0,1\}$
+  \\[3pt]
+    $=1$, falls Auftrag $a$ im Slot $i$ \emph{der letzte Auftrag} von Mitarbeiter $m$ an Tag $wd$ ist (d.\,h.\ es folgt \emph{kein weiterer} Auftrag direkt danach).
+\end{itemize}
+
+\section*{4. Zielfunktion}
+
+\begin{align*}
+\max \;\;\text{obj} 
+=\;&
+  100 \cdot \sum_{m,\,a,\,wd,\,i}
+    \Bigl(
+      \tfrac{1}{\,\text{priority}(a)+\text{dayWeight}(wd)\,}
+    \Bigr)
+    \; x_{m,a,wd,i}
+\\
+&\quad
+  + \sum_{\substack{m,\,a,\,aa,\,wd,\,i \\ i < \max(I),\,a\neq aa}}
+    \Bigl(\tfrac{1}{\text{driveTime}(a,aa)+0.1}\Bigr)\;
+    \text{both\_contracts\_consecutively}_{m,a,aa,wd,i}
+\\
+&\quad
+  + \sum_{m,\,a,\,wd}\,
+    \Bigl(\tfrac{1}{\text{driveTimeMainStation}(a)+0.1}\Bigr)\;
+    x_{m,a,wd,i1}
+\\
+&\quad
+  + \sum_{m,\,a,\,wd,\,i}
+    \Bigl(\tfrac{1}{\text{driveTimeMainStation}(a)+0.1}\Bigr)\;
+    \text{is\_last\_contract\_on\_wd}_{m,a,wd,i}.
+\end{align*}
+
+\section*{5. Nebenbedingungen}
+
+\subsection*{5.1 Hilfsvariable: Beide Aufträge aufeinander folgend}
+\begin{align*}
+&\textbf{(nb1)}\quad
+  \text{both\_contracts\_consecutively}_{m,a,aa,wd,i}
+  \;\le\;
+  x_{m,a,wd,i},
+\\
+&\textbf{(nb2)}\quad
+  \text{both\_contracts\_consecutively}_{m,a,aa,wd,i}
+  \;\le\;
+  x_{m,aa,wd,i+1},
+\\
+&\textbf{(nb3)}\quad
+  \text{both\_contracts\_consecutively}_{m,a,aa,wd,i}
+  \;\ge\;
+  x_{m,a,wd,i} + x_{m,aa,wd,i+1} - 1,
+\\
+&\textbf{(nb4)}\quad
+  \text{both\_contracts\_consecutively}_{m,a,aa,wd,i}
+  = 0
+  \quad\text{falls } i=\max(I),
+\end{align*}
+Definition der Hilfsvariable both\_contracts\_consecutively welche 1 annimmt wenn aa direkt auf den Auftrag a an einem Werktag folgt (sprich Index von aa ist index von a + 1).
+
+\subsection*{5.2 Hilfsvariable: Ist Letzter Auftrag (is\_last\_contract\_on\_wd)}
+\begin{align*}
+&\textbf{(nb1)}\quad
+  \text{is\_last\_contract\_on\_wd}_{m,a,wd,i}
+  \;\le\;
+  x_{m,a,wd,i},
+\\
+&\textbf{(nb2)}\quad
+  \text{is\_last\_contract\_on\_wd}_{m,a,wd,i}
+  \;\le\; 
+  1 \;-\;\sum_{aa}\text{both\_contracts\_consecutively}_{m,a,aa,wd,i},
+\\
+&\textbf{(nb3)}\quad
+  \text{is\_last\_contract\_on\_wd}_{m,a,wd,i}
+  \;\ge\;
+  x_{m,a,wd,i}
+  \;-\;
+  \sum_{aa}\text{both\_contracts\_consecutively}_{m,a,aa,wd,i}.
+\end{align*}
+Definition der Hilfsvariable is\_last\_contract\_on\_wd welche 1 annimmt wenn a für den Mitarbeiter m am Tag wd der letzte zugewiesene Auftrag ist.
+
+\subsection*{5.3 Keine Indexsprünge}
+\[
+  \sum_{aa \in A} x_{m,aa,wd,i}
+  \;\le\;
+  \sum_{a \in A} x_{m,a,wd,i-1}
+  \quad \forall\,m,wd,i>1.
+\]
+Keine erlaubten Indexsprünge auf eine Zuordnung darf nur eine Zuordnung zum Index + 1 an einem Werktag erfolgen.
+
+\subsection*{5.4 Auftragsbelegung pro Tag (nb1)}
+\[
+  \sum_{m \in M}\sum_{wd \in WD}\sum_{i \in I} x_{m,a,wd,i}
+  \;\le\; 1 
+  \quad \forall\, a.
+\]
+Jeder Auftrag $a$ wird höchstens einmal vergeben (Nur eine zuordnung zu einem Mitarbeiter m zu einem Werktag wd zu einen Index).
+
+\subsection*{5.5 Tagesarbeitszeit (nb2)}
+\[
+  \sum_{a \in A}\sum_{i \in I}
+    \bigl[\text{expectedHours}(a)\,x_{m,a,wd,i}\bigr]
+  \;+\;
+  \sum_{a \in A}\sum_{aa \in A}\sum_{i \in I}
+    \bigl[\text{driveTime}(a,aa)\,\text{both\_contracts\_consecutively}_{m,a,aa,wd,i}\bigr]
+  \;+\;
+  \sum_{a\in A}
+    \bigl[\text{driveTimeMainStation}(a)\;x_{m,a,wd,i1}\bigr]
+  \;+\;
+  \sum_{a\in A}\sum_{i\in I}
+    \bigl[\text{driveTimeMainStation}(a)\;\text{is\_last\_contract\_on\_wd}_{m,a,wd,i}\bigr]
+  \;\;\le\;
+  \text{maxWorkingHours}(m).
+\]
+Ein Mitarbeiter darf an einem Werktag seine maximalen Arbeitsstunden \text{maxWorkingHours}(m) nicht überschreiten
+
+\subsection*{5.6 Wochenarbeitszeit (nb3)}
+\[
+  \sum_{wd}\sum_{a}\sum_{i}
+    \bigl[\text{expectedHours}(a)\,x_{m,a,wd,i}\bigr]
+  \;+\;
+  \sum_{wd}\sum_{a}\sum_{aa}\sum_{i}
+    \bigl[\text{driveTime}(a,aa)\,\text{both\_contracts\_consecutively}_{m,a,aa,wd,i}\bigr]
+  \;+\;
+  \sum_{wd}\sum_{a}
+    \bigl[\text{driveTimeMainStation}(a)\;x_{m,a,wd,i1}\bigr]
+  \;+\;
+  \sum_{wd}\sum_{a}\sum_{i}
+    \bigl[\text{driveTimeMainStation}(a)\;\text{is\_last\_contract\_on\_wd}_{m,a,wd,i}\bigr]
+  \;\;\le\;\;
+  \text{maxWorkingHoursWeek}(m).
+\]
+Ein Mitarbeiter darf in einer Werkwoche seine maximalen Arbeitsstunden  \text{maxWorkingHoursWeek}(m) nicht überschreiten.
+
+\subsection*{5.7 Skill-Constraint (nb4)}
+\[
+  \Bigl(\!\prod_{\substack{s \\ \text{necessarySkill}(a,s)=1}}\! \text{employeeSkill}(m,s)\Bigr)
+  \;+\;
+  \text{noSkillNecessary}(a)
+  \;\;\ge\;\; x_{m,a,wd,i}.
+\]
+Ein Mitarbeiter muss alle nötigen Skills \text{necessarySkill}(a,s)=1 besitzen um einem Auftrag a zugewiesen werden zu können.
+
+\subsection*{5.8 Mindestarbeitszeit pro Tag (nb5)}
+\[
+  \sum_{a}\sum_{i}
+    \bigl[\text{expectedHours}(a)\,x_{m,a,wd,i}\bigr]
+  \;+\;
+  \sum_{a,aa}\sum_{i}
+    \bigl[\text{driveTime}(a,aa)\,\text{both\_contracts\_consecutively}_{m,a,aa,wd,i}\bigr]
+  \;+\;
+  \sum_{a}
+    \bigl[\text{driveTimeMainStation}(a)\;x_{m,a,wd,i1}\bigr]
+  \;+\;
+  \sum_{a,i}
+    \bigl[\text{driveTimeMainStation}(a)\;\text{is\_last\_contract\_on\_wd}_{m,a,wd,i}\bigr]
+  \;\;\ge\;\;
+  \text{minWorkingHours}(m).
+\]
+Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden \text{minWorkingHours}(m) leisten.
+
+\subsection*{5.9 Nur ein Auftrag pro Slot (nb6)}
+\[
+  \sum_{a \in A}
+    x_{m,a,wd,i}
+  \;\;\le\;1
+  \quad
+  \forall\,m,wd,i.
+\]
+Ein Mitarbeiter darf an einem Wochentag nur einmal einen bestimmten Index verwenden.
+
+\end{document}

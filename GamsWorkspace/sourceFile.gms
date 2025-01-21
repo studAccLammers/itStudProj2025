@@ -3,7 +3,7 @@ Sets
     a   / a1*a15 /
     wd  / wd1*wd5/
     s   / s1*s5/
-    index /i1*i15/;
+    index /i1*i30/;
 
 Alias(a, aa);
 
