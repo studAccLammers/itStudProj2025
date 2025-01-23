@@ -1,7 +1,8 @@
 import dtos.ContractConfirmation;
 import dtos.TestDataHolder;
-import services.BaseContractService;
-import services.ContractService;
+import services.BaseContractAssignmentAssignmentService;
+import services.ContractAssignmentService;
+import services.NotEnoughWorkingHoursException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -14,14 +15,19 @@ import java.util.stream.Collectors;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        ContractService contractService = new BaseContractService();
-        List<ContractConfirmation> contractConfirmations = contractService.calculateContractAssignments(
-            TestDataHolder.getContracts(),
-            TestDataHolder.getEmployees(),
-            LocalDate.parse("2025-01-06")
-        );
+        ContractAssignmentService contractAssignmentService = new BaseContractAssignmentAssignmentService();
 
-        printContractConfirmations(contractConfirmations);
+        try {
+            List<ContractConfirmation> contractConfirmations = contractAssignmentService.calculateContractAssignments(
+                TestDataHolder.getContracts(),
+                TestDataHolder.getEmployees(),
+                LocalDate.parse("2025-01-06")
+            );
+
+            printContractConfirmations(contractConfirmations);
+        } catch (NotEnoughWorkingHoursException notEnoughWorkingHoursException) {
+            System.out.println(notEnoughWorkingHoursException.getMessage());
+        }
     }
 
     public static void printContractConfirmations(List<ContractConfirmation> confirmations) {

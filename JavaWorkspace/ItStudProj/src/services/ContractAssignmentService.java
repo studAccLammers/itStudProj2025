@@ -7,6 +7,6 @@ import dtos.Employee;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ContractService {
+public interface ContractAssignmentService {
     List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart);
 }

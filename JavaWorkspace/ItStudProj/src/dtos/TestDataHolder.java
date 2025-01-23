@@ -33,9 +33,9 @@ public class TestDataHolder {
     public static List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
 
-        employees.add(new Employee(1, "Employee 1", 10, 40, List.of(Skill.REPAIR, Skill.HEAVY_DELIVERY)));
-        employees.add(new Employee(2, "Employee 2", 10, 40, List.of(Skill.HEAVY_DELIVERY, Skill.ELECTRONICS, Skill.INSTALLATION)));
-        employees.add(new Employee(3, "Employee 3", 10, 40, List.of()));
+        employees.add(new Employee(1, "Employee 1", 4, 10, 40, List.of(Skill.REPAIR, Skill.HEAVY_DELIVERY)));
+        employees.add(new Employee(2, "Employee 2", 0, 10, 40, List.of(Skill.HEAVY_DELIVERY, Skill.ELECTRONICS, Skill.INSTALLATION)));
+        employees.add(new Employee(3, "Employee 3", 0, 10, 40, List.of()));
 
         return employees;
     }

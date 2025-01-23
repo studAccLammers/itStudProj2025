@@ -8,15 +8,17 @@ import java.util.List;
 public class Employee {
     private final int id;
     private final String name;
+    private final int minWorkingHours;
     private final int maxWorkingHours;
     private final int maxWorkingHoursPerWeek;
     private final List<Skill> skills;
     private final List<ContractConfirmation> contracts = new ArrayList<>();
 
 
-    public Employee(int id, String name, int maxWorkingHours, int maxWorkingHoursPerWeek, List<Skill> skills) {
+    public Employee(int id, String name, int minWorkingHours, int maxWorkingHours, int maxWorkingHoursPerWeek, List<Skill> skills) {
         this.id = id;
         this.name = name;
+        this.minWorkingHours = minWorkingHours;
         this.maxWorkingHours = maxWorkingHours;
         this.maxWorkingHoursPerWeek = maxWorkingHoursPerWeek;
         this.skills = skills;
@@ -34,43 +36,37 @@ public class Employee {
         return skills;
     }
 
+    public boolean minWorkingHoursReached(LocalDate date) {
+        return getAssignedDailyWorkingHours(date) >= minWorkingHours;
+    }
+
     public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) {
-        List<ContractConfirmation> assignedContractsForWeekTuples = contracts.stream().filter(x ->
-                x.getDate().getDayOfWeek().getValue() >= weekStart.getDayOfWeek().getValue() &&
-                    x.getDate().getMonthValue() >= weekStart.getMonthValue() &&
-                    x.getDate().getYear() >= weekStart.getYear() &&
-                    x.getDate().getDayOfWeek().getValue() <= weekEnd.getDayOfWeek().getValue() &&
-                    x.getDate().getMonthValue() <= weekEnd.getMonthValue() &&
-                    x.getDate().getYear() <= weekEnd.getYear())
-            .toList();
-
-        int weeklyWorkingHours = 0;
-
-        List<Contract> assignedContractsForWeek = assignedContractsForWeekTuples.stream().map(ContractConfirmation::getContract).toList();
-
-        for (Contract assignedContractInWeek : assignedContractsForWeek) {
-            weeklyWorkingHours += assignedContractInWeek.getExpectedWorkingHours();
-        }
+        int weeklyWorkingHours = getAssignedWeeklyWorkingHours(weekStart, weekEnd);
 
         if (weeklyWorkingHours + contract.getExpectedWorkingHours() > maxWorkingHoursPerWeek) {
             return false;
         }
 
-        List<Contract> assignedContractsForDay = contracts.stream().filter(x ->
-                x.getDate().getDayOfWeek().getValue() == date.getDayOfWeek().getValue() &&
-                    x.getDate().getMonthValue() == date.getMonthValue() &&
-                    x.getDate().getYear() == date.getYear())
-            .map(ContractConfirmation::getContract)
-            .toList();
-
-        int dailyWorkingHours = 0;
-
-        for (Contract assignedContractInDay : assignedContractsForDay) {
-            dailyWorkingHours += assignedContractInDay.getExpectedWorkingHours();
-        }
+        int dailyWorkingHours = getAssignedDailyWorkingHours(date);
 
         return dailyWorkingHours + contract.getExpectedWorkingHours() <= maxWorkingHours &&
             new HashSet<>(skills).containsAll(contract.getNecessarySkills());
+    }
+
+    private int getAssignedDailyWorkingHours(LocalDate date) {
+        return contracts.stream()
+            .filter(x -> x.getDate().isEqual(date))
+            .map(ContractConfirmation::getContract)
+            .mapToInt(Contract::getExpectedWorkingHours)
+            .sum();
+    }
+
+    private int getAssignedWeeklyWorkingHours(LocalDate weekStart, LocalDate weekEnd) {
+        return contracts.stream()
+            .filter(x -> !x.getDate().isBefore(weekStart) && !x.getDate().isAfter(weekEnd))
+            .map(ContractConfirmation::getContract)
+            .mapToInt(Contract::getExpectedWorkingHours)
+            .sum();
     }
 
     public void assignContract(LocalDate date, Contract contract) {
