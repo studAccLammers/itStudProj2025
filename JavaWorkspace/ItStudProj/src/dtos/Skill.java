@@ -4,5 +4,6 @@ public enum Skill {
     REPAIR,
     HEAVY_DELIVERY,
     ELECTRONICS,
-    INSTALLATION;
+    INSTALLATION,
+    UNINSTALLATION;
 }

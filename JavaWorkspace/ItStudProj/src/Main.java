@@ -19,8 +19,8 @@ public class Main {
 
         try {
             List<ContractConfirmation> contractConfirmations = contractAssignmentService.calculateContractAssignments(
-                TestDataHolder.getContracts(),
-                TestDataHolder.getEmployees(),
+                TestDataHolder.getInstance().getContracts(),
+                TestDataHolder.getInstance().getEmployees(),
                 LocalDate.parse("2025-01-06")
             );
 
