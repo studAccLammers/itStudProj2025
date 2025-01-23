@@ -1,4 +1,5 @@
 import dtos.ContractConfirmation;
+import dtos.Employee;
 import dtos.TestDataHolder;
 import services.BaseContractAssignmentAssignmentService;
 import services.ContractAssignmentService;
@@ -43,9 +44,29 @@ public class Main {
                     .forEach(cc -> System.out.println(
                         "m" + cc.getContract().getAssignedEmployee().getId() +
                             " -> a" + cc.getContract().getId()));
-
                 System.out.println();
             }
+        }
+
+        System.out.println();
+
+        LocalDate weekStart = LocalDate.parse("2025-01-06");
+
+        for (Employee employee : TestDataHolder.getInstance().getEmployees()) {
+            System.out.println("m" + employee.getId() + "WeekHours: " + employee.getAssignedWeeklyWorkingHours(weekStart, weekStart.plusDays(4)));
+        }
+
+        System.out.println();
+        System.out.println();
+
+        for (LocalDate weekDay = weekStart; weekDay.isBefore(weekStart.plusDays(5)); weekDay = weekDay.plusDays(1)) {
+            System.out.println("Day: " + weekDay.getDayOfWeek().toString());
+
+            for (Employee employee : TestDataHolder.getInstance().getEmployees()) {
+                System.out.println("m" + employee.getId() + " Hours: " + employee.getAssignedDailyWorkingHours(weekDay));
+            }
+
+            System.out.println();
         }
     }
 }
