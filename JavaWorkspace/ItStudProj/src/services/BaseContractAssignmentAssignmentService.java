@@ -48,17 +48,44 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
         List<Contract> unassignedContracts = new ArrayList<>(contracts);
 
         for (Contract contract : contracts) {
+            Employee bestEmployee = null;
+            double bestScore = Double.MAX_VALUE;
+
             for (Employee employee : employees) {
                 if (employee.capableForContract(day, day, weekEnd, contract)) {
-                    employee.assignContract(day, contract);
-                    unassignedContracts.remove(contract);
-                    break;
+                    List<ContractConfirmation> alreadyAssignedContractsOnDay = employee.getContracts()
+                        .stream()
+                        .filter(cc -> cc.getDate().isEqual(day))
+                        .toList();
+
+                    Contract lastContract = !alreadyAssignedContractsOnDay.isEmpty() ? alreadyAssignedContractsOnDay.getLast().getContract() : null;
+
+                    double driveTime = lastContract != null ?
+                        DriveTimeMatrixHandler.getInstance().getDriveTime(lastContract, contract) :
+                        contract.getDriveTimeMainStationInHours();
+
+                    //Minimize Score. Fewer DriveTime and fewer Skills and not reached DayWorkTime is preferred.
+                    double score = (driveTime * 10) + employee.getSkills().size();
+                    if (employee.minWorkingHoursReached(day)) {
+                        score += 1;
+                    }
+
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestEmployee = employee;
+                    }
                 }
+            }
+
+            if (bestEmployee != null) {
+                bestEmployee.assignContract(day, contract);
+                unassignedContracts.remove(contract);
             }
         }
 
         return unassignedContracts;
     }
+
 
     private List<Contract> orderContractsByPriority(List<Contract> contracts) {
         return contracts.stream()

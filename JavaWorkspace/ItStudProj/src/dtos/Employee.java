@@ -44,33 +44,36 @@ public class Employee {
     }
 
     public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) {
-        double weeklyWorkingHours = getAssignedWeeklyWorkingHoursWithoutHomeDrive(weekStart, weekEnd);
+        if (new HashSet<>(skills).containsAll(contract.getNecessarySkills())) {
+            return false;
+        }
 
-        if (weeklyWorkingHours + contract.getExpectedWorkingHours() + contract.getDriveTimeMainStationInHours() > maxWorkingHoursPerWeek) {
+        double weeklyWorkingHours = getAssignedWeeklyWorkingHoursWithoutHomeDrive(weekStart, weekEnd);
+        Contract lastAssignedContractOfDay = getLastAssignedContractOfDay(date);
+
+        double driveTimeToContract = lastAssignedContractOfDay != null ?
+            DriveTimeMatrixHandler.getInstance().getDriveTime(lastAssignedContractOfDay, contract) :
+            contract.getDriveTimeMainStationInHours();
+
+        if (weeklyWorkingHours +
+            driveTimeToContract +
+            contract.getExpectedWorkingHours() +
+            contract.getDriveTimeMainStationInHours()
+            > maxWorkingHoursPerWeek) {
             return false;
         }
 
         double dailyWorkingHours = getAssignedDailyWorkingHoursWithoutHomeDrive(date);
 
-        return dailyWorkingHours + contract.getExpectedWorkingHours() + contract.getDriveTimeMainStationInHours() <= maxWorkingHours &&
-            new HashSet<>(skills).containsAll(contract.getNecessarySkills());
+        return dailyWorkingHours +
+            driveTimeToContract +
+            contract.getExpectedWorkingHours() +
+            contract.getDriveTimeMainStationInHours() <= maxWorkingHours;
     }
 
     public double getAssignedDailyWorkingHours(LocalDate date) {
-        double homeDriveTime = 0;
-
-        try {
-            homeDriveTime = getContracts()
-                .stream()
-                .filter(x -> x.getDate().isEqual(date))
-                .map(ContractConfirmation::getContract)
-                .toList()
-                .getLast()
-                .getDriveTimeMainStationInHours();
-        } catch (NoSuchElementException NSE) {
-            //do Nothing
-        }
-
+        Contract lastAssignedContractOfDay = getLastAssignedContractOfDay(date);
+        double homeDriveTime = lastAssignedContractOfDay != null ? lastAssignedContractOfDay.getDriveTimeMainStationInHours() : 0;
         return getAssignedDailyWorkingHoursWithoutHomeDrive(date) + homeDriveTime;
     }
 
@@ -78,21 +81,8 @@ public class Employee {
         double homeDriveTime = 0;
 
         for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
-            LocalDate finalWeekDay = weekDay;
-
-            try {
-                double homeDriveTimeDay = getContracts()
-                    .stream()
-                    .filter(x -> x.getDate().isEqual(finalWeekDay))
-                    .map(ContractConfirmation::getContract)
-                    .toList()
-                    .getLast()
-                    .getDriveTimeMainStationInHours();
-
-                homeDriveTime += homeDriveTimeDay;
-            } catch (NoSuchElementException NSE) {
-                //do Nothing
-            }
+            Contract lastAssignedContractOfWeekDay = getLastAssignedContractOfDay(weekDay);
+            homeDriveTime += lastAssignedContractOfWeekDay != null ? lastAssignedContractOfWeekDay.getDriveTimeMainStationInHours() : 0;
         }
 
         return getAssignedWeeklyWorkingHoursWithoutHomeDrive(weekStart, weekEnd) + homeDriveTime;
@@ -152,6 +142,19 @@ public class Employee {
         }
 
         return workingHours;
+    }
+
+    private Contract getLastAssignedContractOfDay(LocalDate date) {
+        try {
+            return getContracts()
+                .stream()
+                .filter(x -> x.getDate().isEqual(date))
+                .map(ContractConfirmation::getContract)
+                .toList()
+                .getLast();
+        } catch (NoSuchElementException NSE) {
+            return null;
+        }
     }
 
     public void assignContract(LocalDate date, Contract contract) {
