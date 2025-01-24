@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 public class BaseContractAssignmentAssignmentService implements ContractAssignmentService {
 
-    private static final int ASSIGNMENT_ITERATIONS = 20;
+    private static final int ASSIGNMENT_ITERATIONS = 50;
 
     public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws NotEnoughWorkingHoursException {
         List<Contract> orderedContracts = orderContractsByPriority(contracts); // Prefer contracts with highest priority first.
@@ -22,11 +22,8 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
         List<Contract> unassignedContracts = orderedContracts;
 
         for (int iteration = 0; iteration < ASSIGNMENT_ITERATIONS; iteration++) {
-            for (int i = 0; i < 5; i++) {
-                LocalDate currentDay = weekStart.plusDays(i);
-                //Prefer employees not reached MinHoursForDay and then with fewer Skills to safe for complex contracts
-                List<Employee> orderedEmployees = orderEmployeeByMinWorkingHoursThenBySkills(employees, currentDay);
-                unassignedContracts = assignContractToCapableEmployee(orderedEmployees, currentDay, weekEnd, unassignedContracts);
+            for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd); weekDay = weekDay.plusDays(1)) {
+                unassignedContracts = assignContractToCapableEmployee(employees, weekDay, weekEnd, unassignedContracts);
             }
         }
 
@@ -90,14 +87,6 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
     private List<Contract> orderContractsByPriority(List<Contract> contracts) {
         return contracts.stream()
             .sorted(Comparator.comparing(Contract::getPriority))
-            .collect(Collectors.toList());
-    }
-
-    private List<Employee> orderEmployeeByMinWorkingHoursThenBySkills(List<Employee> employees, LocalDate day) {
-        return employees.stream()
-            .sorted(Comparator
-                .comparing((Employee e) -> e.minWorkingHoursReached(day))
-                .thenComparing(e -> e.getSkills().size()))
             .collect(Collectors.toList());
     }
 
