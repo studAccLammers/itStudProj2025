@@ -48,14 +48,13 @@ public class Employee {
             return false;
         }
 
-        double weeklyWorkingHours = getAssignedWeeklyWorkingHoursWithoutHomeDrive(weekStart, weekEnd);
         Contract lastAssignedContractOfDay = getLastAssignedContractOfDay(date);
 
         double driveTimeToContract = lastAssignedContractOfDay != null ?
             DriveTimeMatrixHandler.getInstance().getDriveTime(lastAssignedContractOfDay, contract) :
             contract.getDriveTimeMainStationInHours();
 
-        if (weeklyWorkingHours +
+        if (getAssignedWeeklyWorkingHours(weekStart, weekEnd, date) +
             driveTimeToContract +
             contract.getExpectedWorkingHours() +
             contract.getDriveTimeMainStationInHours()
@@ -63,9 +62,7 @@ public class Employee {
             return false;
         }
 
-        double dailyWorkingHours = getAssignedDailyWorkingHoursWithoutHomeDrive(date);
-
-        return dailyWorkingHours +
+        return getAssignedDailyWorkingHoursWithoutHomeDrive(date) +
             driveTimeToContract +
             contract.getExpectedWorkingHours() +
             contract.getDriveTimeMainStationInHours() <= maxWorkingHours;
@@ -77,15 +74,26 @@ public class Employee {
         return getAssignedDailyWorkingHoursWithoutHomeDrive(date) + homeDriveTime;
     }
 
-    public double getAssignedWeeklyWorkingHours(LocalDate weekStart, LocalDate weekEnd) {
+    public double getAssignedWeeklyWorkingHours(LocalDate weekStart, LocalDate weekEnd, LocalDate exceptHomeDriveTimeFromDate) {
         double homeDriveTime = 0;
 
         for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
-            Contract lastAssignedContractOfWeekDay = getLastAssignedContractOfDay(weekDay);
-            homeDriveTime += lastAssignedContractOfWeekDay != null ? lastAssignedContractOfWeekDay.getDriveTimeMainStationInHours() : 0;
+            if (exceptHomeDriveTimeFromDate == null || !weekDay.isEqual(exceptHomeDriveTimeFromDate)) {
+                Contract lastAssignedContractOfWeekDay = getLastAssignedContractOfDay(weekDay);
+                homeDriveTime += lastAssignedContractOfWeekDay != null ? lastAssignedContractOfWeekDay.getDriveTimeMainStationInHours() : 0;
+            }
         }
 
         return getAssignedWeeklyWorkingHoursWithoutHomeDrive(weekStart, weekEnd) + homeDriveTime;
+    }
+
+    public void assignContract(LocalDate date, Contract contract) {
+        contract.setAssignedEmployee(this);
+        contracts.add(new ContractConfirmation(contract, date));
+    }
+
+    public List<ContractConfirmation> getContracts() {
+        return this.contracts;
     }
 
     private double getAssignedDailyWorkingHoursWithoutHomeDrive(LocalDate date) {
@@ -115,7 +123,7 @@ public class Employee {
 
         double workingHours = sumHoursAndDriveTime(contracts);
 
-        for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd); weekDay = weekDay.plusDays(1)) {
+        for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
             LocalDate finalWeekDay = weekDay;
             Contract firstContractOnDay = getContracts()
                 .stream()
@@ -155,14 +163,5 @@ public class Employee {
         } catch (NoSuchElementException NSE) {
             return null;
         }
-    }
-
-    public void assignContract(LocalDate date, Contract contract) {
-        contract.setAssignedEmployee(this);
-        contracts.add(new ContractConfirmation(contract, date));
-    }
-
-    public List<ContractConfirmation> getContracts() {
-        return this.contracts;
     }
 }

@@ -22,8 +22,16 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
         List<Contract> unassignedContracts = orderedContracts;
 
         for (int iteration = 0; iteration < ASSIGNMENT_ITERATIONS; iteration++) {
-            for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd); weekDay = weekDay.plusDays(1)) {
-                unassignedContracts = assignContractToCapableEmployee(employees, weekDay, weekEnd, unassignedContracts);
+            for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
+                unassignedContracts = assignContractToCapableEmployee(employees, weekDay, weekStart, weekEnd, unassignedContracts);
+
+                if(unassignedContracts.isEmpty()) {
+                    break;
+                }
+            }
+
+            if(unassignedContracts.isEmpty()) {
+                break;
             }
         }
 
@@ -37,7 +45,7 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
         return contractConfirmations;
     }
 
-    private List<Contract> assignContractToCapableEmployee(List<Employee> employees, LocalDate day, LocalDate weekEnd, List<Contract> contracts) {
+    private List<Contract> assignContractToCapableEmployee(List<Employee> employees, LocalDate day, LocalDate weekStart, LocalDate weekEnd, List<Contract> contracts) {
         if (contracts.isEmpty()) {
             return new ArrayList<>();
         }
@@ -49,7 +57,7 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
             double bestScore = Double.MAX_VALUE;
 
             for (Employee employee : employees) {
-                if (employee.capableForContract(day, day, weekEnd, contract)) {
+                if (employee.capableForContract(day, weekStart, weekEnd, contract)) {
                     List<ContractConfirmation> alreadyAssignedContractsOnDay = employee.getContracts()
                         .stream()
                         .filter(cc -> cc.getDate().isEqual(day))

@@ -53,7 +53,7 @@ public class Main {
         LocalDate weekStart = LocalDate.parse("2025-01-06");
 
         for (Employee employee : TestDataHolder.getInstance().getEmployees()) {
-            System.out.println("m" + employee.getId() + "WeekHours: " + employee.getAssignedWeeklyWorkingHours(weekStart, weekStart.plusDays(4)));
+            System.out.println("m" + employee.getId() + "WeekHours: " + employee.getAssignedWeeklyWorkingHours(weekStart, weekStart.plusDays(4), null));
         }
 
         System.out.println();

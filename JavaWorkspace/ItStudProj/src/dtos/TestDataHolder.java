@@ -32,6 +32,7 @@ public class TestDataHolder {
         contracts.add(new Contract(13, 4, List.of(Skill.INSTALLATION), Priority.HIGH, 0.49));
         contracts.add(new Contract(14, 1, List.of(Skill.HEAVY_DELIVERY), Priority.NORMAL, 0.91));
         contracts.add(new Contract(15, 2, List.of(Skill.UNINSTALLATION), Priority.HIGH, 0.75));
+
         employees.add(new Employee(1, "Employee 1", 0, 10, 40, List.of(Skill.REPAIR, Skill.HEAVY_DELIVERY)));
         employees.add(new Employee(2, "Employee 2", 0, 10, 40, List.of(Skill.HEAVY_DELIVERY, Skill.ELECTRONICS, Skill.INSTALLATION)));
     }
