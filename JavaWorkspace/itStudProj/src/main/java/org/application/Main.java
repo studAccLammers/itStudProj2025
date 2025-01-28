@@ -4,7 +4,6 @@ import org.application.dtos.ContractConfirmation;
 import org.application.dtos.Employee;
 import org.application.dtos.TestDataHolder;
 import org.application.services.DriveTimeCalculationException;
-import org.application.services.NotEnoughWorkingHoursException;
 import org.application.services.ServiceManager;
 
 import java.time.DayOfWeek;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 public class Main {
-    public static void main(String[] args) throws DriveTimeCalculationException {
+    public static void main(String[] args) {
         try {
             List<ContractConfirmation> contractConfirmations = ServiceManager.getInstance().getContractAssignmentService().calculateContractAssignments(
                 TestDataHolder.getInstance().getContracts(),
