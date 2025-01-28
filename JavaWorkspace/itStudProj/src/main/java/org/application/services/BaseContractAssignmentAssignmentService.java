@@ -1,8 +1,8 @@
-package services;
+package org.application.services;
 
-import dtos.Contract;
-import dtos.ContractConfirmation;
-import dtos.Employee;
+import org.application.dtos.Contract;
+import org.application.dtos.ContractConfirmation;
+import org.application.dtos.Employee;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
 
     private static final int ASSIGNMENT_ITERATIONS = 50;
 
-    public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws NotEnoughWorkingHoursException {
+    public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws NotEnoughWorkingHoursException, DriveTimeCalculationException {
         List<Contract> orderedContracts = orderContractsByPriority(contracts); // Prefer contracts with highest priority first.
         LocalDate weekEnd = weekStart.plusDays(4);
 
@@ -25,12 +25,12 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
             for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
                 unassignedContracts = assignContractToCapableEmployee(employees, weekDay, weekStart, weekEnd, unassignedContracts);
 
-                if(unassignedContracts.isEmpty()) {
+                if (unassignedContracts.isEmpty()) {
                     break;
                 }
             }
 
-            if(unassignedContracts.isEmpty()) {
+            if (unassignedContracts.isEmpty()) {
                 break;
             }
         }
@@ -45,7 +45,7 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
         return contractConfirmations;
     }
 
-    private List<Contract> assignContractToCapableEmployee(List<Employee> employees, LocalDate day, LocalDate weekStart, LocalDate weekEnd, List<Contract> contracts) {
+    private List<Contract> assignContractToCapableEmployee(List<Employee> employees, LocalDate day, LocalDate weekStart, LocalDate weekEnd, List<Contract> contracts) throws DriveTimeCalculationException {
         if (contracts.isEmpty()) {
             return new ArrayList<>();
         }
@@ -98,8 +98,14 @@ public class BaseContractAssignmentAssignmentService implements ContractAssignme
             .collect(Collectors.toList());
     }
 
-    private boolean everyMinWorkingHoursReached(List<Employee> employees, LocalDate weekStart) {
-        return employees.stream().allMatch(employee -> IntStream.range(0, 5).allMatch(i -> employee.minWorkingHoursReached(weekStart.plusDays(i))));
+    private boolean everyMinWorkingHoursReached(List<Employee> employees, LocalDate weekStart) throws RuntimeException {
+        return employees.stream().allMatch(employee -> IntStream.range(0, 5).allMatch(i -> {
+            try {
+                return employee.minWorkingHoursReached(weekStart.plusDays(i));
+            } catch (DriveTimeCalculationException e) {
+                throw new RuntimeException(e);
+            }
+        }));
     }
 
 }

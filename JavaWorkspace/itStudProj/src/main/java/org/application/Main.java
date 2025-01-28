@@ -1,9 +1,11 @@
-import dtos.ContractConfirmation;
-import dtos.Employee;
-import dtos.TestDataHolder;
-import services.BaseContractAssignmentAssignmentService;
-import services.ContractAssignmentService;
-import services.NotEnoughWorkingHoursException;
+package org.application;
+
+import org.application.dtos.ContractConfirmation;
+import org.application.dtos.Employee;
+import org.application.dtos.TestDataHolder;
+import org.application.services.DriveTimeCalculationException;
+import org.application.services.NotEnoughWorkingHoursException;
+import org.application.services.ServiceManager;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,26 +14,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        ContractAssignmentService contractAssignmentService = new BaseContractAssignmentAssignmentService();
 
+public class Main {
+    public static void main(String[] args) throws DriveTimeCalculationException {
         try {
-            List<ContractConfirmation> contractConfirmations = contractAssignmentService.calculateContractAssignments(
+            List<ContractConfirmation> contractConfirmations = ServiceManager.getInstance().getContractAssignmentService().calculateContractAssignments(
                 TestDataHolder.getInstance().getContracts(),
                 TestDataHolder.getInstance().getEmployees(),
                 LocalDate.parse("2025-01-06")
             );
 
             printContractConfirmations(contractConfirmations);
-        } catch (NotEnoughWorkingHoursException notEnoughWorkingHoursException) {
-            System.out.println(notEnoughWorkingHoursException.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            exception.printStackTrace();
         }
     }
 
-    public static void printContractConfirmations(List<ContractConfirmation> confirmations) {
+    public static void printContractConfirmations(List<ContractConfirmation> confirmations) throws DriveTimeCalculationException {
         Map<DayOfWeek, List<ContractConfirmation>> confirmationsByDay = confirmations.stream()
             .collect(Collectors.groupingBy(confirmation -> confirmation.getDate().getDayOfWeek()));
 

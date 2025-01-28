@@ -1,6 +1,7 @@
-package dtos;
+package org.application.dtos;
 
-import services.DriveTimeMatrixHandler;
+import org.application.services.DriveTimeCalculationException;
+import org.application.services.DriveTimeMatrixHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,11 +40,11 @@ public class Employee {
         return skills;
     }
 
-    public boolean minWorkingHoursReached(LocalDate date) {
+    public boolean minWorkingHoursReached(LocalDate date) throws DriveTimeCalculationException {
         return getAssignedDailyWorkingHoursWithoutHomeDrive(date) >= minWorkingHours;
     }
 
-    public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) {
+    public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) throws DriveTimeCalculationException {
         if (new HashSet<>(skills).containsAll(contract.getNecessarySkills())) {
             return false;
         }
@@ -68,13 +69,13 @@ public class Employee {
             contract.getDriveTimeMainStationInHours() <= maxWorkingHours;
     }
 
-    public double getAssignedDailyWorkingHours(LocalDate date) {
+    public double getAssignedDailyWorkingHours(LocalDate date) throws DriveTimeCalculationException {
         Contract lastAssignedContractOfDay = getLastAssignedContractOfDay(date);
         double homeDriveTime = lastAssignedContractOfDay != null ? lastAssignedContractOfDay.getDriveTimeMainStationInHours() : 0;
         return getAssignedDailyWorkingHoursWithoutHomeDrive(date) + homeDriveTime;
     }
 
-    public double getAssignedWeeklyWorkingHours(LocalDate weekStart, LocalDate weekEnd, LocalDate exceptHomeDriveTimeFromDate) {
+    public double getAssignedWeeklyWorkingHours(LocalDate weekStart, LocalDate weekEnd, LocalDate exceptHomeDriveTimeFromDate) throws DriveTimeCalculationException {
         double homeDriveTime = 0;
 
         for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
@@ -96,7 +97,7 @@ public class Employee {
         return this.contracts;
     }
 
-    private double getAssignedDailyWorkingHoursWithoutHomeDrive(LocalDate date) {
+    private double getAssignedDailyWorkingHoursWithoutHomeDrive(LocalDate date) throws DriveTimeCalculationException {
         List<Contract> contracts = getContracts()
             .stream()
             .filter(x -> x.getDate().isEqual(date))
@@ -111,7 +112,7 @@ public class Employee {
         return workingHours + contracts.getFirst().getExpectedWorkingHours();
     }
 
-    private double getAssignedWeeklyWorkingHoursWithoutHomeDrive(LocalDate weekStart, LocalDate weekEnd) {
+    private double getAssignedWeeklyWorkingHoursWithoutHomeDrive(LocalDate weekStart, LocalDate weekEnd) throws DriveTimeCalculationException {
         List<Contract> contracts = getContracts()
             .stream()
             .filter(x -> !x.getDate().isBefore(weekStart) && !x.getDate().isAfter(weekEnd)).map(ContractConfirmation::getContract)
@@ -138,7 +139,7 @@ public class Employee {
         return workingHours;
     }
 
-    private double sumHoursAndDriveTime(List<Contract> contracts) {
+    private double sumHoursAndDriveTime(List<Contract> contracts) throws DriveTimeCalculationException {
         double workingHours = 0;
 
         for (Contract contract : contracts) {

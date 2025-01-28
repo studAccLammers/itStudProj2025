@@ -1,4 +1,4 @@
-package dtos;
+package org.application.dtos;
 
 public enum Priority {
     HIGHEST,
