@@ -63,3 +63,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/JavaWorkspace/itStudProj/mapData/*
