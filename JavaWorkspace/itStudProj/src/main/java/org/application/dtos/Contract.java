@@ -1,17 +1,30 @@
 package org.application.dtos;
 
-import org.application.services.drivetime.DriveTimeCalculationException;
+import com.google.gson.annotations.Expose;
 import org.application.services.ServiceManager;
+import org.application.services.drivetime.DriveTimeCalculationException;
 
 import java.util.List;
 
 public class Contract {
+    @Expose
     private final int id;
+
+    @Expose
     private final int expectedWorkingHours;
+
+    @Expose
     private final List<Skill> necessarySkills;
+
+    @Expose
     private final Priority priority;
+
+    @Expose
     private final double longitude;
+
+    @Expose
     private final double latitude;
+
     private Employee assignedEmployee;
     private Double driveTimeMainStationInHours;
 

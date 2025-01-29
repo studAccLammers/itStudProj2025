@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="11e0ce6f-a840-4b90-950b-7432c257b75e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/BaseContractAssignmentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/DriveTimeMatrixCacheHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/application/services/testdata/DataGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/application/services/testdata/TestDataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/BaseContractAssignmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/BaseContractAssignmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/DriveTimeMatrixHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/application/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/application/dtos/Contract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/dtos/Contract.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/application/dtos/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/dtos/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/BaseContractAssignmentAssignmentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/BaseDriveTimeCalculationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/BaseDriveTimeCalculationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/ContractAssignmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/ContractAssignmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/DriveTimeCalculationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/DriveTimeCalculationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/DriveTimeCalculationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/DriveTimeCalculationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/DriveTimeMatrixHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/DriveTimeMatrixHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/NotEnoughWorkingHoursException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/NotEnoughWorkingHoursException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/ServiceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/ServiceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/dtos/TestDataHolder.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,33 +66,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.application.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build ItStudProj.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build itStudProj.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItStudProj [:org.application.Main.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItStudProj [:org.main.Main.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.itStudProj [:org.example.Main.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.itStudProj.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/itStud9Lp2025/JavaWorkspace/itStudProj&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;D:/itStudProj/itStudProj/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15429688&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.application.executor": "Debug",
+    "Gradle.Build ItStudProj.executor": "Run",
+    "Gradle.Build itStudProj.executor": "Run",
+    "Gradle.ItStudProj [:org.application.Main.main()].executor": "Run",
+    "Gradle.ItStudProj [:org.main.Main.main()].executor": "Run",
+    "Gradle.itStudProj [:org.example.Main.main()].executor": "Run",
+    "Gradle.itStudProj.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "14__driveTimeImplicitInGams",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/itStud9Lp2025/JavaWorkspace/itStudProj",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "D:/itStudProj/itStudProj/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15429688",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="application" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="23" />
@@ -126,22 +125,12 @@
       <workItem from="1738096723773" duration="97000" />
       <workItem from="1738097600604" duration="155000" />
       <workItem from="1738148296879" duration="2276000" />
+      <workItem from="1738151524690" duration="7338000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/application/Main.java</url>
-          <line>65</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

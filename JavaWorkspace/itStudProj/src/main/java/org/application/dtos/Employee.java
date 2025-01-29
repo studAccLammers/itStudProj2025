@@ -1,7 +1,8 @@
 package org.application.dtos;
 
+import com.google.gson.annotations.Expose;
 import org.application.services.drivetime.DriveTimeCalculationException;
-import org.application.services.drivetime.DriveTimeMatrixHandler;
+import org.application.services.drivetime.DriveTimeMatrixCacheHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,13 +11,25 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Employee {
+    @Expose
     private final int id;
+
+    @Expose
     private final String name;
+
+    @Expose
     private final double minWorkingHours;
+
+    @Expose
     private final double maxWorkingHours;
+
+    @Expose
     private final double maxWorkingHoursPerWeek;
+
+    @Expose
     private final List<Skill> skills;
-    private final List<ContractConfirmation> contracts = new ArrayList<>();
+
+    private List<ContractConfirmation> contracts;
 
 
     public Employee(int id, String name, double minWorkingHours, double maxWorkingHours, double maxWorkingHoursPerWeek, List<Skill> skills) {
@@ -41,7 +54,7 @@ public class Employee {
     }
 
     public boolean minWorkingHoursReached(LocalDate date) throws DriveTimeCalculationException {
-        return getAssignedDailyWorkingHoursWithoutHomeDrive(date) >= minWorkingHours;
+        return getAssignedDailyWorkingHours(date) >= minWorkingHours;
     }
 
     public boolean capableForContract(LocalDate date, LocalDate weekStart, LocalDate weekEnd, Contract contract) throws DriveTimeCalculationException {
@@ -52,7 +65,7 @@ public class Employee {
         Contract lastAssignedContractOfDay = getLastAssignedContractOfDay(date);
 
         double driveTimeToContract = lastAssignedContractOfDay != null ?
-            DriveTimeMatrixHandler.getInstance().getDriveTime(lastAssignedContractOfDay, contract) :
+            DriveTimeMatrixCacheHandler.getInstance().getDriveTime(lastAssignedContractOfDay, contract) :
             contract.getDriveTimeMainStationInHours();
 
         if (getAssignedWeeklyWorkingHours(weekStart, weekEnd, date) +
@@ -90,10 +103,17 @@ public class Employee {
 
     public void assignContract(LocalDate date, Contract contract) {
         contract.setAssignedEmployee(this);
+        if (this.contracts == null) {
+            this.contracts = new ArrayList<>();
+        }
         contracts.add(new ContractConfirmation(contract, date));
     }
 
     public List<ContractConfirmation> getContracts() {
+        if (this.contracts == null) {
+            this.contracts = new ArrayList<>();
+        }
+
         return this.contracts;
     }
 
@@ -109,31 +129,14 @@ public class Employee {
         }
 
         double workingHours = sumHoursAndDriveTime(contracts);
-        return workingHours + contracts.getFirst().getExpectedWorkingHours();
+        return workingHours + contracts.getFirst().getDriveTimeMainStationInHours();
     }
 
     private double getAssignedWeeklyWorkingHoursWithoutHomeDrive(LocalDate weekStart, LocalDate weekEnd) throws DriveTimeCalculationException {
-        List<Contract> contracts = getContracts()
-            .stream()
-            .filter(x -> !x.getDate().isBefore(weekStart) && !x.getDate().isAfter(weekEnd)).map(ContractConfirmation::getContract)
-            .toList();
-
-        if (contracts.isEmpty()) {
-            return 0;
-        }
-
-        double workingHours = sumHoursAndDriveTime(contracts);
+        double workingHours = 0;
 
         for (LocalDate weekDay = weekStart; weekDay.isBefore(weekEnd.plusDays(1)); weekDay = weekDay.plusDays(1)) {
-            LocalDate finalWeekDay = weekDay;
-            Contract firstContractOnDay = getContracts()
-                .stream()
-                .filter(x -> x.getDate().isEqual(finalWeekDay))
-                .map(ContractConfirmation::getContract)
-                .findFirst()
-                .orElse(null);
-
-            workingHours += firstContractOnDay != null ? firstContractOnDay.getDriveTimeMainStationInHours() : 0;
+            workingHours += getAssignedDailyWorkingHoursWithoutHomeDrive(weekDay);
         }
 
         return workingHours;
@@ -146,7 +149,7 @@ public class Employee {
             workingHours += contract.getExpectedWorkingHours();
 
             if (!contracts.getFirst().equals(contract)) {
-                workingHours += DriveTimeMatrixHandler.getInstance().getDriveTime(contracts.get(contracts.indexOf(contract) - 1), contract);
+                workingHours += DriveTimeMatrixCacheHandler.getInstance().getDriveTime(contracts.get(contracts.indexOf(contract) - 1), contract);
             }
         }
 

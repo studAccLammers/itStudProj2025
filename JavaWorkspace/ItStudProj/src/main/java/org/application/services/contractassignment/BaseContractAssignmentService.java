@@ -4,7 +4,7 @@ import org.application.dtos.Contract;
 import org.application.dtos.ContractConfirmation;
 import org.application.dtos.Employee;
 import org.application.services.drivetime.DriveTimeCalculationException;
-import org.application.services.drivetime.DriveTimeMatrixHandler;
+import org.application.services.drivetime.DriveTimeMatrixCacheHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
                     Contract lastContract = !alreadyAssignedContractsOnDay.isEmpty() ? alreadyAssignedContractsOnDay.getLast().getContract() : null;
 
                     double driveTime = lastContract != null ?
-                        DriveTimeMatrixHandler.getInstance().getDriveTime(lastContract, contract) :
+                        DriveTimeMatrixCacheHandler.getInstance().getDriveTime(lastContract, contract) :
                         contract.getDriveTimeMainStationInHours();
 
                     //Minimize Score. Fewer DriveTime and fewer Skills and not reached DayWorkTime is preferred.
