@@ -63,7 +63,7 @@ public class DataGenerator {
 
     private static List<Employee> generateRandomEmployees() {
         Random random = new Random();
-        int numberOfEmployees = 1 + random.nextInt(11);
+        int numberOfEmployees = random.nextInt(1, 5);
 
         List<Employee> employees = new ArrayList<>();
         for (int i = 1; i <= numberOfEmployees; i++) {
@@ -72,7 +72,7 @@ public class DataGenerator {
             Employee employee = new Employee(
                 i,
                 "m" + i,
-                6,
+                1,
                 10,
                 40,
                 randomSkills
@@ -85,7 +85,7 @@ public class DataGenerator {
 
     private static List<Contract> generateRandomContracts() {
         Random random = new Random();
-        int numberOfContracts = 50 + random.nextInt(101);  // min=50, max=150
+        int numberOfContracts = random.nextInt(100, 300);
 
         List<Contract> contracts = new ArrayList<>();
         for (int i = 1; i <= numberOfContracts; i++) {
@@ -99,7 +99,7 @@ public class DataGenerator {
 
             Contract contract = new Contract(
                 i,
-                random.nextInt(8) + 1,
+                random.nextDouble(0.001, 8.000),
                 necessarySkills,
                 priority,
                 latitude,

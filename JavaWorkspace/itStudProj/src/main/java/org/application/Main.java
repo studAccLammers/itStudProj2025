@@ -2,11 +2,11 @@ package org.application;
 
 import org.application.dtos.ContractConfirmation;
 import org.application.dtos.Employee;
-import org.application.services.testdata.TestDataLoader;
 import org.application.services.ServiceManager;
 import org.application.services.contractassignment.NotEnoughWorkingHoursException;
 import org.application.services.drivetime.DriveTimeCalculationException;
 import org.application.services.testdata.DataGenerator;
+import org.application.services.testdata.TestDataLoader;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,21 +23,29 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         for (int i = 0; i < 10; i++) {
-            String path = null;
             try {
-                path = DataGenerator.generateData();
-                TestDataLoader.getInstance().initialize(path);
+                String path = null;
+                try {
+                    path = DataGenerator.generateData();
+                    TestDataLoader.getInstance().initialize(path);
 
-                List<ContractConfirmation> contractConfirmations = ServiceManager.getInstance().getContractAssignmentService().calculateContractAssignments(
-                    TestDataLoader.getInstance().getContracts(),
-                    TestDataLoader.getInstance().getEmployees(),
-                    LocalDate.parse("2025-01-06")
-                );
+                    List<ContractConfirmation> contractConfirmations = ServiceManager.getInstance().getContractAssignmentService().calculateContractAssignments(
+                        TestDataLoader.getInstance().getContracts(),
+                        TestDataLoader.getInstance().getEmployees(),
+                        LocalDate.parse("2025-01-06")
+                    );
 
-                printContractConfirmations(contractConfirmations, path);
-            } catch (DriveTimeCalculationException | NotEnoughWorkingHoursException exception) {
-                if (path != null) {
-                    printException(exception, path);
+                    printContractConfirmations(contractConfirmations, path);
+                } catch (NotEnoughWorkingHoursException newhe) {
+                    printContractConfirmations(newhe.getContractConfirmations(), path);
+
+                    if (path != null) {
+                        printException(newhe, path);
+                    }
+                } catch (DriveTimeCalculationException dtce) {
+                    if (path != null) {
+                        printException(dtce, path);
+                    }
                 }
             } catch (Exception exception) {
                 System.out.println(exception.getMessage());

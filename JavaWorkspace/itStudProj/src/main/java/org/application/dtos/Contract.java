@@ -11,7 +11,7 @@ public class Contract {
     private final int id;
 
     @Expose
-    private final int expectedWorkingHours;
+    private final double expectedWorkingHours;
 
     @Expose
     private final List<Skill> necessarySkills;
@@ -28,7 +28,7 @@ public class Contract {
     private Employee assignedEmployee;
     private Double driveTimeMainStationInHours;
 
-    public Contract(int id, int expectedWorkingHours, List<Skill> necessarySkills, Priority priority, double latitude, double longitude) {
+    public Contract(int id, double expectedWorkingHours, List<Skill> necessarySkills, Priority priority, double latitude, double longitude) {
         this.id = id;
         this.expectedWorkingHours = expectedWorkingHours;
         this.necessarySkills = necessarySkills;
@@ -41,7 +41,7 @@ public class Contract {
         return id;
     }
 
-    public int getExpectedWorkingHours() {
+    public double getExpectedWorkingHours() {
         return expectedWorkingHours;
     }
 

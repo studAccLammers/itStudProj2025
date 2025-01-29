@@ -41,7 +41,7 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
         employees.forEach(employee -> contractConfirmations.addAll(employee.getContracts()));
 
         if (!everyMinWorkingHoursReached(employees, weekStart)) {
-            throw new NotEnoughWorkingHoursException();
+            throw new NotEnoughWorkingHoursException(contractConfirmations);
         }
 
         return contractConfirmations;
@@ -58,29 +58,42 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
             Employee bestEmployee = null;
             double bestScore = Double.MAX_VALUE;
 
+            //Prefer employees without reached minWorkingHours
+            List<Employee> filteredEmployees = new ArrayList<>();
             for (Employee employee : employees) {
-                if (employee.capableForContract(day, weekStart, weekEnd, contract)) {
-                    List<ContractConfirmation> alreadyAssignedContractsOnDay = employee.getContracts()
-                        .stream()
-                        .filter(cc -> cc.getDate().isEqual(day))
-                        .toList();
+                if (employee.capableForContract(day, weekStart, weekEnd, contract) &&
+                    !employee.minWorkingHoursReached(day)) {
+                    filteredEmployees.add(employee);
+                }
+            }
 
-                    Contract lastContract = !alreadyAssignedContractsOnDay.isEmpty() ? alreadyAssignedContractsOnDay.getLast().getContract() : null;
-
-                    double driveTime = lastContract != null ?
-                        DriveTimeMatrixCacheHandler.getInstance().getDriveTime(lastContract, contract) :
-                        contract.getDriveTimeMainStationInHours();
-
-                    //Minimize Score. Fewer DriveTime and fewer Skills and not reached DayWorkTime is preferred.
-                    double score = (driveTime * 10) + employee.getSkills().size();
-                    if (employee.minWorkingHoursReached(day)) {
-                        score += 1;
+            //When every minWorkingHoursAreReached assign the best capable employee, else go to next contract and then to next day
+            if (filteredEmployees.isEmpty() && everyMinWorkingHoursReached(employees, weekStart)) {
+                for (Employee employee : employees) {
+                    if (employee.capableForContract(day, weekStart, weekEnd, contract)) {
+                        filteredEmployees.add(employee);
                     }
+                }
+            }
 
-                    if (score < bestScore) {
-                        bestScore = score;
-                        bestEmployee = employee;
-                    }
+            for (Employee employee : filteredEmployees) {
+                List<ContractConfirmation> alreadyAssignedContractsOnDay = employee.getContracts()
+                    .stream()
+                    .filter(cc -> cc.getDate().isEqual(day))
+                    .toList();
+
+                Contract lastContract = !alreadyAssignedContractsOnDay.isEmpty() ? alreadyAssignedContractsOnDay.getLast().getContract() : null;
+
+                double driveTime = lastContract != null ?
+                    DriveTimeMatrixCacheHandler.getInstance().getDriveTime(lastContract, contract) :
+                    contract.getDriveTimeMainStationInHours();
+
+                //Minimize Score. Fewer DriveTime and fewer Skills and not reached DayWorkTime is preferred.
+                double score = (driveTime * 10) + employee.getSkills().size();
+
+                if (score < bestScore) {
+                    bestScore = score;
+                    bestEmployee = employee;
                 }
             }
 
