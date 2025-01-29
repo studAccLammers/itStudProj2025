@@ -1,8 +1,10 @@
-package org.application.services;
+package org.application.services.contractassignment;
 
 import org.application.dtos.Contract;
 import org.application.dtos.ContractConfirmation;
 import org.application.dtos.Employee;
+import org.application.services.drivetime.DriveTimeCalculationException;
+import org.application.services.drivetime.DriveTimeMatrixHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BaseContractAssignmentAssignmentService implements ContractAssignmentService {
+public class BaseContractAssignmentService implements ContractAssignmentService {
 
     private static final int ASSIGNMENT_ITERATIONS = 50;
 

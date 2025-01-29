@@ -1,4 +1,4 @@
-package org.application.services;
+package org.application.services.drivetime;
 
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;

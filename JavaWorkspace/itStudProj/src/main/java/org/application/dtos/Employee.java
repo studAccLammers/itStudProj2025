@@ -1,7 +1,7 @@
 package org.application.dtos;
 
-import org.application.services.DriveTimeCalculationException;
-import org.application.services.DriveTimeMatrixHandler;
+import org.application.services.drivetime.DriveTimeCalculationException;
+import org.application.services.drivetime.DriveTimeMatrixHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

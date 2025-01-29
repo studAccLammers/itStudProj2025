@@ -1,4 +1,4 @@
-package org.application.services;
+package org.application.services.contractassignment;
 
 public class NotEnoughWorkingHoursException extends IllegalStateException {
     public NotEnoughWorkingHoursException() {

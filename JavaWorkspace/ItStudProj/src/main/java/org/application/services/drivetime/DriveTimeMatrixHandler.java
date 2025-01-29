@@ -1,7 +1,8 @@
-package org.application.services;
+package org.application.services.drivetime;
 
 import org.application.dtos.Contract;
 import org.application.dtos.TestDataHolder;
+import org.application.services.ServiceManager;
 
 import java.util.HashMap;
 import java.util.List;

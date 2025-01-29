@@ -3,7 +3,7 @@ package org.application;
 import org.application.dtos.ContractConfirmation;
 import org.application.dtos.Employee;
 import org.application.dtos.TestDataHolder;
-import org.application.services.DriveTimeCalculationException;
+import org.application.services.drivetime.DriveTimeCalculationException;
 import org.application.services.ServiceManager;
 
 import java.time.DayOfWeek;

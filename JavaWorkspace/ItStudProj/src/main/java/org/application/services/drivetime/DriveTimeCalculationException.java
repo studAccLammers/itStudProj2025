@@ -1,4 +1,4 @@
-package org.application.services;
+package org.application.services.drivetime;
 
 public class DriveTimeCalculationException extends Exception {
     public DriveTimeCalculationException(String errorMsg, double startLat, double startLon, double endLat, double endLon) {

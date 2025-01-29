@@ -139,17 +139,7 @@ Equations
 
 *Zielfunktion
 mip .. obj =e=
-   (100 * sum((m,a,wd,index),
-    (1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index)
-   ))
- + sum((m,a,aa,wd,index)$(not ord(a) = ord(aa) and ord(index)<card(index)),
-      (1 / (driveTime(a,aa) + 0.1)) * both_contracts_consecutively(m,a,aa,wd,index)
-   )
- + sum((m,a,wd),
-      (1 / (driveTimeMainStation(a) + 0.1)) * x(m,a,wd,"i1")
-   )
- + sum((m,a,wd,index),
-      (1 / (driveTimeMainStation(a) + 0.1)) * is_last_contract_on_wd(m,a,wd,index)
+   sum((m,a,wd,index),(1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index)
    )
 ;
 

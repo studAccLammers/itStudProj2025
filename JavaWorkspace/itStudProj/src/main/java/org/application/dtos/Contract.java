@@ -1,6 +1,6 @@
 package org.application.dtos;
 
-import org.application.services.DriveTimeCalculationException;
+import org.application.services.drivetime.DriveTimeCalculationException;
 import org.application.services.ServiceManager;
 
 import java.util.List;
