@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11e0ce6f-a840-4b90-950b-7432c257b75e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/dtos/Contract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/dtos/Contract.java" afterDir="false" />
-    </list>
+    <list default="true" id="11e0ce6f-a840-4b90-950b-7432c257b75e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,7 +114,7 @@
       <workItem from="1738097600604" duration="155000" />
       <workItem from="1738148296879" duration="2276000" />
       <workItem from="1738151524690" duration="7356000" />
-      <workItem from="1738159073847" duration="4667000" />
+      <workItem from="1738159073847" duration="4850000" />
     </task>
     <servers />
   </component>

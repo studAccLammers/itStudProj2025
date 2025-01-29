@@ -67,7 +67,7 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
                 }
             }
 
-            //When every minWorkingHoursAreReached assign the best capable employee, else go to next contract and then to next day
+            //When every minWorkingHours are reached assign the best capable employee, else go to next contract and then to next day
             if (filteredEmployees.isEmpty() && everyMinWorkingHoursReached(employees, weekStart)) {
                 for (Employee employee : employees) {
                     if (employee.capableForContract(day, weekStart, weekEnd, contract)) {
