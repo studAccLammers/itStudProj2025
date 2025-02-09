@@ -77,7 +77,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15429688",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -115,6 +115,7 @@
       <workItem from="1738148296879" duration="2276000" />
       <workItem from="1738151524690" duration="7356000" />
       <workItem from="1738159073847" duration="4850000" />
+      <workItem from="1738222675794" duration="2075000" />
     </task>
     <servers />
   </component>
