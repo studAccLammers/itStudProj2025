@@ -138,10 +138,9 @@ Equations
     mip;
 
 *Zielfunktion
-mip .. obj =e=
-   sum((m,a,wd,index),(1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index)
-   )
-;
+mip .. obj =e= sum((m,a,wd,index),
+(1 / (priority(a) + dayWeight(wd))) * x(m,a,wd,index)
+);
 
 
 
@@ -217,3 +216,4 @@ Display x.l;
 Display nb2.l;
 Display nb3.l;
 Display driveTime;
+Display driveTimeMainStation;
