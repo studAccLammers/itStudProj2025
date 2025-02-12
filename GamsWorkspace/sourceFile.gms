@@ -197,22 +197,13 @@ nb2(m, wd) .. sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,ind
 nb3(m) .. sum((a,wd,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,wd,index), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd,index)) + sum((a, wd), driveTimeMainStation(a) * x(m,a,wd,"i1")) + sum((a, wd,index), driveTimeMainStation(a) * is_last_contract_on_wd(m,a,wd,index)) =l= maxWorkingHoursWeek(m);
 
 *nb4: Ein Mitarbeiter muss alle nötigen Skills besitzen um einem Auftrag zugewiesen werden zu können
-Parameter
-    noSkillNecessary(a);
-noSkillNecessary(a) = no$(sum(s, necessarySkill(a,s)) >= 1);
-nb4(m,a,wd,index) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) + noSkillNecessary(a) =g= x(m,a,wd,index);
+nb4(m,a,wd,index) .. (prod((s)$(necessarySkill(a,s)), employeeSkill(m,s))) =g= x(m,a,wd,index);
 
 *nb5: Ein Mitarbeiter muss an einem Werktag seine mindest Arbeitsstunden leisten
 nb5(m, wd) ..  sum((a,index), expectedHours(a) * x(m,a,wd,index)) + sum((a,aa,index), driveTime(a,aa) * both_contracts_consecutively(m,a,aa,wd,index)) + sum((a), driveTimeMainStation(a) * x(m,a,wd,"i1")) + sum((a,index), driveTimeMainStation(a) * is_last_contract_on_wd(m,a,wd,index)) =g= minWorkingHours(m);
 
 * nb6: Ein Mitarbeiter darf an einem Wochentag nur einmal einen bestimmten Index verwenden
 nb6(m, wd, index) .. sum((a), x(m,a,wd,index)) =l= 1;
-
-
-
-
-
-
 
 
 

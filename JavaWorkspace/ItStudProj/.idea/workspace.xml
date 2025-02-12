@@ -54,33 +54,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.application.executor": "Debug",
-    "Gradle.Build ItStudProj.executor": "Run",
-    "Gradle.Build itStudProj.executor": "Run",
-    "Gradle.ItStudProj [:org.application.Main.main()].executor": "Run",
-    "Gradle.ItStudProj [:org.main.Main.main()].executor": "Run",
-    "Gradle.itStudProj [:org.example.Main.main()].executor": "Run",
-    "Gradle.itStudProj.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/itStud9Lp2025/JavaWorkspace/itStudProj",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/itStudProj/itStudProj/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15429688",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.application.executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.Build ItStudProj.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build itStudProj.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItStudProj [:org.application.Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItStudProj [:org.main.Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.itStudProj [:org.example.Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.itStudProj.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/itStud9Lp2025/JavaWorkspace/itStudProj&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/itStudProj/itStudProj/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15429688&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="application" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="23" />
@@ -116,6 +116,7 @@
       <workItem from="1738151524690" duration="7356000" />
       <workItem from="1738159073847" duration="4850000" />
       <workItem from="1738222675794" duration="2075000" />
+      <workItem from="1739120741726" duration="2055000" />
     </task>
     <servers />
   </component>
