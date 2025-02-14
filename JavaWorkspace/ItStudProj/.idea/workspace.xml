@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11e0ce6f-a840-4b90-950b-7432c257b75e" name="Changes" comment="" />
+    <list default="true" id="11e0ce6f-a840-4b90-950b-7432c257b75e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/application/services/testdata/DataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/BaseContractAssignmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/BaseContractAssignmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/ContractAssignmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/contractassignment/ContractAssignmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/BaseDriveTimeCalculationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/services/drivetime/BaseDriveTimeCalculationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/services/testdata/TestDataLoader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/application/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/application/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,6 +125,10 @@
       <workItem from="1738159073847" duration="4850000" />
       <workItem from="1738222675794" duration="2075000" />
       <workItem from="1739120741726" duration="2055000" />
+      <workItem from="1739398871783" duration="3340000" />
+      <workItem from="1739404665270" duration="669000" />
+      <workItem from="1739441697167" duration="16127000" />
+      <workItem from="1739526226004" duration="4792000" />
     </task>
     <servers />
   </component>

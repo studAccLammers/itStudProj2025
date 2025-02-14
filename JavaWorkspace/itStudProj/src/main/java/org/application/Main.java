@@ -6,7 +6,7 @@ import org.application.services.ServiceManager;
 import org.application.services.contractassignment.NotEnoughWorkingHoursException;
 import org.application.services.drivetime.DriveTimeCalculationException;
 import org.application.services.testdata.DataGenerator;
-import org.application.services.testdata.TestDataLoader;
+import org.application.services.testdata.DataLoader;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,11 +27,11 @@ public class Main {
                 String path = null;
                 try {
                     path = DataGenerator.generateData();
-                    TestDataLoader.getInstance().initialize(path);
+                    DataLoader.getInstance().initialize(path);
 
                     List<ContractConfirmation> contractConfirmations = ServiceManager.getInstance().getContractAssignmentService().calculateContractAssignments(
-                        TestDataLoader.getInstance().getContracts(),
-                        TestDataLoader.getInstance().getEmployees(),
+                        DataLoader.getInstance().getContracts(),
+                        DataLoader.getInstance().getEmployees(),
                         LocalDate.parse("2025-01-06")
                     );
 
@@ -108,7 +108,7 @@ public class Main {
 
             LocalDate weekStart = LocalDate.parse("2025-01-06");
 
-            for (Employee employee : TestDataLoader.getInstance().getEmployees()) {
+            for (Employee employee : DataLoader.getInstance().getEmployees()) {
                 writer.write("m" + employee.getId() + " WeekHours: "
                     + employee.getAssignedWeeklyWorkingHours(weekStart, weekStart.plusDays(4), null));
                 writer.newLine();
@@ -121,7 +121,7 @@ public class Main {
                 writer.write("Day: " + weekDay.getDayOfWeek());
                 writer.newLine();
 
-                for (Employee employee : TestDataLoader.getInstance().getEmployees()) {
+                for (Employee employee : DataLoader.getInstance().getEmployees()) {
                     writer.write("m" + employee.getId() + " Hours: " + employee.getAssignedDailyWorkingHours(weekDay));
                     writer.newLine();
                 }

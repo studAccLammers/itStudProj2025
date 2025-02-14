@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public class BaseContractAssignmentService implements ContractAssignmentService {
 
-    private static final int ASSIGNMENT_ITERATIONS = 50;
+    private static final int ASSIGNMENT_ITERATIONS = 10;
 
     public List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws NotEnoughWorkingHoursException, DriveTimeCalculationException {
         List<Contract> orderedContracts = orderContractsByPriority(contracts); // Prefer contracts with highest priority first.
@@ -67,7 +67,8 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
                 }
             }
 
-            //When every minWorkingHours are reached assign the best capable employee, else go to next contract and then to next day
+            //When every minWorkingHours are reached assign the best capable employee,
+            // if there is no capable employee go to next contract and then to next day
             if (filteredEmployees.isEmpty() && everyMinWorkingHoursReached(employees, weekStart)) {
                 for (Employee employee : employees) {
                     if (employee.capableForContract(day, weekStart, weekEnd, contract)) {
@@ -105,7 +106,6 @@ public class BaseContractAssignmentService implements ContractAssignmentService 
 
         return unassignedContracts;
     }
-
 
     private List<Contract> orderContractsByPriority(List<Contract> contracts) {
         return contracts.stream()

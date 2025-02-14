@@ -24,6 +24,10 @@ public class DataGenerator {
 
     private static final double RADIUS_KM = 50.0;
 
+    private static final double MIN_WORKING_HOURS = 6;
+    private static final double MAX_WORKING_HOURS = 10;
+    private static final double MAX_WORKING_HOURS_WEEK = 40;
+
     public static String generateData() throws IOException {
         File targetDirectory = createNextDirectory(BASE_PATH);
 
@@ -31,9 +35,6 @@ public class DataGenerator {
         List<Contract> contracts = generateRandomContracts();
 
         writeJsonFiles(targetDirectory, employees, contracts);
-
-        System.out.println("Die JSON-Dateien wurden erfolgreich in "
-            + targetDirectory.getAbsolutePath() + " erstellt.");
 
         return targetDirectory.getAbsolutePath();
     }
@@ -72,9 +73,9 @@ public class DataGenerator {
             Employee employee = new Employee(
                 i,
                 "m" + i,
-                1,
-                10,
-                40,
+                MIN_WORKING_HOURS,
+                MAX_WORKING_HOURS,
+                MAX_WORKING_HOURS_WEEK,
                 randomSkills
             );
 
@@ -99,7 +100,7 @@ public class DataGenerator {
 
             Contract contract = new Contract(
                 i,
-                random.nextDouble(0.001, 8.000),
+                random.nextDouble(0.1, 8.000),
                 necessarySkills,
                 priority,
                 latitude,

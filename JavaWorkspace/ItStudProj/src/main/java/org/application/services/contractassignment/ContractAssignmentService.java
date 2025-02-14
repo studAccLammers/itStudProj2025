@@ -9,5 +9,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ContractAssignmentService {
-    List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws DriveTimeCalculationException;
+    List<ContractConfirmation> calculateContractAssignments(List<Contract> contracts, List<Employee> employees, LocalDate weekStart) throws NotEnoughWorkingHoursException, DriveTimeCalculationException;
 }

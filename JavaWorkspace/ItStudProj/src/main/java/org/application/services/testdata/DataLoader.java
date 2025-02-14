@@ -13,15 +13,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestDataLoader {
-    private static TestDataLoader INSTANCE;
+public class DataLoader {
+    private static DataLoader INSTANCE;
 
     private final List<Contract> contracts = new ArrayList<>();
     private final List<Employee> employees = new ArrayList<>();
 
-    public static TestDataLoader getInstance() {
+    public static DataLoader getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new TestDataLoader();
+            INSTANCE = new DataLoader();
         }
         return INSTANCE;
     }
@@ -31,10 +31,10 @@ public class TestDataLoader {
     }
 
 
-    private TestDataLoader() {
+    private DataLoader() {
     }
 
-    public void loadFromDirectory(String directoryPath) throws IOException {
+    private void loadFromDirectory(String directoryPath) throws IOException {
         File dir = new File(directoryPath);
         if (!dir.isDirectory()) {
             throw new IOException("Pfad ist kein Verzeichnis: " + directoryPath);

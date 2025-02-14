@@ -41,10 +41,9 @@ public class BaseDriveTimeCalculationService implements DriveTimeCalculationServ
                 throw new DriveTimeCalculationException(response.getErrors().toString(), startLat, startLon, endLat, endLon);
             }
 
-            double distanceInMeters = response.getBest().getDistance();
-            double averageSpeedInMetersPerSecond = 50.0 * 1000 / 3600;
-            double travelTimeInSeconds = distanceInMeters / averageSpeedInMetersPerSecond;
-            return travelTimeInSeconds / 60 / 60;
+            long timeInMs = response.getBest().getTime(); // driveTime in ms
+            long timeInSeconds = timeInMs / 1000;
+            return timeInSeconds / 60.0 / 60.0;
         } catch (Exception e) {
             throw new DriveTimeCalculationException(e.getMessage(), startLat, startLon, endLat, endLon);
         }
